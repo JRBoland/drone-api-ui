@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import api from './apiService'
-import { ApiResponse } from '../components/DronesUi'
+import { Drone, ApiResponse } from '../interfaces/drone'
+
 
 
 export const fetchDrones = async (): Promise<ApiResponse> => {

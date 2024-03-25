@@ -1,16 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, FlatList, StyleSheet } from 'react-native'
 import { fetchDrones } from '../services/droneService'
-
-interface Drone {
-  id: number
-  name: string
-  weight: number
-}
-
-export interface ApiResponse {
-  data: Drone[];
-}
+import { ApiResponse, Drone } from '../interfaces/drone'
 
 const DronesUi = () => {
   const [drones, setDrones] = useState<Drone[]>([])
