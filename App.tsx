@@ -3,7 +3,8 @@ import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View, Button, Pressable, Text } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import DronesScreen from './screens/DroneScreen'
+import DroneScreen from './screens/DroneScreen'
+import PilotScreen from './screens/PilotScreen'
 
 const Stack = createStackNavigator()
 
@@ -12,7 +13,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Drones" component={DronesScreen} />
+        <Stack.Screen name="Drones" component={DroneScreen} />
+        <Stack.Screen name="Pilots" component={PilotScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
@@ -30,6 +32,9 @@ const HomeScreen = ({
   const handleGetDrones = () => {
     navigation.navigate('Drones') // Navigate to DronesScreen
   }
+  const handleGetPilots = () => {
+    navigation.navigate('Pilots') // Navigate to PilotScreen
+  }
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
@@ -39,6 +44,7 @@ const HomeScreen = ({
           </Text>
         </Pressable>
         {/* below is todo*/}
+        {/*
         <Pressable style={styles.button} onPress={handleGetDrones}>
           <Text style={[styles.buttonText, { color: 'darkslateblue' }]}>
             Find a Drone
@@ -58,7 +64,35 @@ const HomeScreen = ({
           <Text style={[styles.buttonText, { color: 'darkgreen' }]}>
             Create a Drone
           </Text>
+  </Pressable>*/}
+      </View>
+      <View style={styles.buttonContainer}>
+        <Pressable style={styles.button} onPress={handleGetPilots}>
+          <Text style={[styles.buttonText, { color: 'cadetblue' }]}>
+            Show All Pilots
+          </Text>
         </Pressable>
+        {/* below is todo*/}
+        {/*<Pressable style={styles.button} onPress={handleGetPilots}>
+          <Text style={[styles.buttonText, { color: 'darkslateblue' }]}>
+            Find a Pilot
+          </Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={handleGetPilots}>
+          <Text style={[styles.buttonText, { color: 'darkcyan' }]}>
+            Update a Pilot
+          </Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={handleGetPilots}>
+          <Text style={[styles.buttonText, { color: 'brown' }]}>
+            Delete a Pilot
+          </Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={handleGetPilots}>
+          <Text style={[styles.buttonText, { color: 'darkgreen' }]}>
+            Create a Pilot
+          </Text>
+  </Pressable>*/}
       </View>
       <StatusBar style="auto" />
     </View>

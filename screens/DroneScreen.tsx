@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { fetchDrones } from '../services/droneService';
-import { Drone, ApiResponse } from '../interfaces/drone'
+import { Drone, DroneApiResponse } from '../interfaces/drone'
 
-const DronesScreen = () => {
+const DroneScreen = () => {
   const [drones, setDrones] = useState<Drone[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response: ApiResponse = await fetchDrones();
+        const response: DroneApiResponse = await fetchDrones();
         console.log('data is', response);
         setDrones(response.data);
       } catch (error) {
@@ -53,4 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DronesScreen;
+export default DroneScreen;

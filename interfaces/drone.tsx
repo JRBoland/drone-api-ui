@@ -4,6 +4,6 @@ export interface Drone {
   weight: number
 }
 
-export interface ApiResponse {
+export interface DroneApiResponse {
   data: Drone[];
 }

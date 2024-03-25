@@ -1,12 +1,12 @@
 import axios, { AxiosError } from 'axios'
 import api from './apiService'
-import { Drone, ApiResponse } from '../interfaces/drone'
+import { Drone, DroneApiResponse } from '../interfaces/drone'
 
 
 
-export const fetchDrones = async (): Promise<ApiResponse> => {
+export const fetchDrones = async (): Promise<DroneApiResponse> => {
   try {
-    const response = await api.get<ApiResponse>('drones');
+    const response = await api.get<DroneApiResponse>('drones');
     console.log(response.data);
     return response.data;
   } catch (error) {

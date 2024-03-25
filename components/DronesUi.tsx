@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, FlatList, StyleSheet } from 'react-native'
 import { fetchDrones } from '../services/droneService'
-import { ApiResponse, Drone } from '../interfaces/drone'
+import { DroneApiResponse, Drone } from '../interfaces/drone'
 
 const DronesUi = () => {
   const [drones, setDrones] = useState<Drone[]>([])
@@ -9,7 +9,7 @@ const DronesUi = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response: ApiResponse = await fetchDrones();
+        const response: DroneApiResponse = await fetchDrones();
         console.log('data is', response);
         setDrones(response.data);
       } catch (error) {
