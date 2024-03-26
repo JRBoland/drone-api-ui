@@ -25,7 +25,7 @@ const DroneScreen = () => {
   return (
     <View style={styles.container}>
       {drones.length === 0 ? (
-        <Text>No drones found</Text>
+        <Text style={styles.text}>No drones found.</Text>
       ) : (
         <FlatList
           data={drones}
@@ -42,7 +42,7 @@ const DroneScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 50,
+    margin: 20,
     backgroundColor: '#f0f0f0',
   },
   text: {

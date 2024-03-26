@@ -25,7 +25,7 @@ const PilotScreen = () => {
   return (
     <View style={styles.container}>
       {pilots.length === 0 ? (
-        <Text>No Pilots found</Text>
+        <Text style={styles.text}>No Pilots found</Text>
       ) : (
         <FlatList
           data={pilots}
@@ -42,7 +42,7 @@ const PilotScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 50,
+    margin: 20,
     backgroundColor: '#f0f0f0',
   },
   text: {
