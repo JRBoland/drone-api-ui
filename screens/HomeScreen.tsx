@@ -5,7 +5,9 @@ import { useAuth } from '../utils/authContext'
 
 const HomeScreen = ({ navigation }: any) => {
   const [username, setUsername] = useState('Guest')
-
+  const { isAuthenticated, logout } = useAuth()
+  
+  
   useEffect(() => {
     const getUsername = async () => {
       const storedUsername = await AsyncStorage.getItem('username')
@@ -17,13 +19,14 @@ const HomeScreen = ({ navigation }: any) => {
     getUsername()
   }, [])
 
-  const { logout } = useAuth()
-
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem('userToken')
-    await AsyncStorage.removeItem('username')
-    logout()
-    //navigation.navigate('Login')
+  const handleAuthAction = async () => {
+    if (isAuthenticated) {
+      await AsyncStorage.removeItem('userToken')
+      await AsyncStorage.removeItem('username')
+      logout()
+    } else {
+      navigation.navigate('Login')
+    }
   }
 
   const handleGetDrones = () => {
@@ -33,20 +36,29 @@ const HomeScreen = ({ navigation }: any) => {
   const handleGetPilots = () => {
     navigation.navigate('Pilots') // Navigate to PilotScreen
   }
+
+  const handleGetFlights = () => {
+    navigation.navigate('Flights') // navigate to FlightScreen
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Hello {username}</Text>
       <Pressable style={styles.button} onPress={handleGetDrones}>
-        <Text style={styles.buttonText}>Show All Drones</Text>
+        <Text style={styles.buttonText}>Drones</Text>
       </Pressable>
       <Pressable style={styles.button} onPress={handleGetPilots}>
-        <Text style={styles.buttonText}>Show All Pilots</Text>
+        <Text style={styles.buttonText}>Pilots</Text>
+      </Pressable>
+      <Pressable style={styles.button} onPress={handleGetFlights}>
+        <Text style={styles.buttonText}>Flights</Text>
       </Pressable>
       <Pressable
-        style={[styles.button, { backgroundColor: 'orange', marginTop: 24, }]}
-        onPress={handleLogout}
+        style={[styles.button, { backgroundColor: 'orange', marginTop: 24 }]}
+        onPress={handleAuthAction}
       >
-        <Text style={styles.buttonText}>Logout</Text>
+        <Text style={styles.buttonText}>
+          {isAuthenticated ? 'Logout' : 'Login'}
+        </Text>
       </Pressable>
     </View>
   )
@@ -56,14 +68,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start', 
+    justifyContent: 'flex-start',
     backgroundColor: '#fff',
     paddingTop: 20,
   },
   button: {
     borderWidth: 2,
     borderRadius: 2,
-    padding: 10, 
+    padding: 10,
     marginVertical: 8,
     width: 180,
     backgroundColor: 'beige',
@@ -80,7 +92,7 @@ const styles = StyleSheet.create({
     width: 180,
     margin: 24,
     padding: 10,
-  }
+  },
 })
 
 export default HomeScreen

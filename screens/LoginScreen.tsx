@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, Pressable } from 'react-native';
 import axios from 'axios';
 import api from '../services/apiService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -54,7 +54,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         style={styles.input}
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Button title="Login" onPress={handleLogin} />
+      <Pressable onPress={handleLogin}>
+        <Text style={styles.button}>Login</Text>
+      </Pressable>
     </View>
   );
 };
@@ -62,13 +64,30 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    backgroundColor: '#fff',
+    paddingTop: 20,
+  },
+  button: {
+    borderWidth: 2,
+    borderRadius: 2,
+    padding: 10,
+    marginVertical: 8,
+    width: 180,
+    backgroundColor: 'beige',
+  },
+  buttonText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   input: {
     marginBottom: 10,
     borderWidth: 1,
     padding: 10,
+    width: 400,
   },
   error: {
     color: 'red',

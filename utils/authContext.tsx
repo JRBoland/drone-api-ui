@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AuthContext = createContext({
@@ -7,9 +7,13 @@ const AuthContext = createContext({
   logout: () => {},
 });
 
+type AuthProviderProps = {
+  children: ReactNode; // This type accepts any valid React child (elements, strings, numbers, fragments, etc.)
+};
+
 export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   
