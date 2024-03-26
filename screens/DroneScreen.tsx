@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Pressable,
   Alert,
+  Platform,
 } from 'react-native'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import { useAuth } from '../utils/authContext'
@@ -38,8 +39,12 @@ const DroneScreen: React.FC = () => {
     console.log('clicked')
     if (isAuthenticated) {
       navigation.navigate('Manage', { entityType: 'Drones' })
+    } else if (Platform.OS === 'web') {
+      window.alert('Authentication required to manage drones, Please log in')
+      navigation.navigate('Login')
     } else {
-      Alert.alert('Authentication required', 'Please log in', [
+      console.log('not authenticated')
+      Alert.alert('Authentication required to manage drones', 'Please log in', [
         { text: 'OK', onPress: () => navigation.navigate('Login') },
       ])
     }
@@ -48,7 +53,7 @@ const DroneScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <Pressable style={styles.button} onPress={handleManageDrones}>
-        <Text style={styles.buttonText}>Manage Drones</Text>
+        <Text style={styles.buttonText}>𝌶 Manage Drones</Text>
       </Pressable>
       <FlatList
         data={drones}
@@ -60,7 +65,6 @@ const DroneScreen: React.FC = () => {
           >{`ID: ${item.id}, Name: ${item.name}, Weight: ${item.weight}`}</Text>
         )}
       />
-      
     </View>
   )
 }
@@ -73,8 +77,8 @@ const styles = StyleSheet.create({
   },
   button: {
     borderWidth: 2,
-    borderRadius: 2,
-    padding: 10, 
+    borderRadius: 4,
+    padding: 10,
     margin: 10,
     width: 180,
     backgroundColor: 'beige',
@@ -82,7 +86,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'black',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '500',
     textAlign: 'center',
   },
   text: {

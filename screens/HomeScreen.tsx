@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Pressable, Text, StyleSheet } from 'react-native'
+import { View, Pressable, Text, StyleSheet, Platform, Alert } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useAuth } from '../utils/authContext'
 
@@ -23,6 +23,11 @@ const HomeScreen = ({ navigation }: any) => {
     if (isAuthenticated) {
       await AsyncStorage.removeItem('userToken')
       await AsyncStorage.removeItem('username')
+      if (Platform.OS === 'web') {
+        window.alert('You have logged out')
+      } else {
+        Alert.alert('You have logged out')
+      }
       logout()
     } else {
       navigation.navigate('Login')
@@ -42,7 +47,8 @@ const HomeScreen = ({ navigation }: any) => {
   }
   return (
     <View style={styles.container}>
-      <Text style={styles.welcomeText}>Hello {username}</Text>
+      <Text style={styles.welcomeText}>Hello {username} 👋 </Text>
+      <View style={styles.buttonsContainer}>
       <Pressable style={styles.button} onPress={handleGetDrones}>
         <Text style={styles.buttonText}>Drones</Text>
       </Pressable>
@@ -52,6 +58,7 @@ const HomeScreen = ({ navigation }: any) => {
       <Pressable style={styles.button} onPress={handleGetFlights}>
         <Text style={styles.buttonText}>Flights</Text>
       </Pressable>
+      </View>
       <Pressable
         style={[styles.button, { backgroundColor: 'orange', marginTop: 24 }]}
         onPress={handleAuthAction}
@@ -74,9 +81,9 @@ const styles = StyleSheet.create({
   },
   button: {
     borderWidth: 2,
-    borderRadius: 2,
+    borderRadius: 4,
     padding: 10,
-    marginVertical: 8,
+    marginVertical: 6,
     width: 180,
     backgroundColor: 'beige',
   },
@@ -91,8 +98,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     width: 180,
     margin: 24,
-    padding: 10,
+    padding: 2,
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'left',
   },
+  buttonsContainer: {
+    marginVertical: 36
+  }
 })
 
 export default HomeScreen

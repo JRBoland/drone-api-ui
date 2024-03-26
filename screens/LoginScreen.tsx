@@ -40,6 +40,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.loginTitle}>Login</Text>
       <TextInput
         placeholder="Username"
         value={username}
@@ -54,8 +55,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         style={styles.input}
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Pressable onPress={handleLogin}>
-        <Text style={styles.button}>Login</Text>
+      <Pressable style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Submit</Text>
       </Pressable>
     </View>
   );
@@ -67,14 +68,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
-    paddingTop: 20,
   },
   button: {
     borderWidth: 2,
-    borderRadius: 2,
+    borderRadius: 6,
     padding: 10,
     marginVertical: 8,
-    width: 180,
+    width: 120,
     backgroundColor: 'beige',
   },
   buttonText: {
@@ -93,6 +93,11 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 10,
   },
+  loginTitle: {
+    margin: 20,
+    fontSize: 20,
+    fontWeight: 'bold',
+  }
 });
 
 export default LoginScreen;
