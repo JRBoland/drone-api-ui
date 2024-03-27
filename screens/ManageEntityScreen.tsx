@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   Pressable,
 } from 'react-native'
@@ -11,8 +10,6 @@ import { useRoute, RouteProp } from '@react-navigation/native'
 import { entityConfigurations } from '../config/entityConfigurations'
 import {
   ManageEntityScreenParams,
-  FieldConfig,
-  EntityConfigurations,
 } from '../config/entityConfigurations'
 
 const ManageEntityScreen = () => {
@@ -20,8 +17,9 @@ const ManageEntityScreen = () => {
     useRoute<RouteProp<{ params: ManageEntityScreenParams }, 'params'>>()
   const [operation, setOperation] = useState('')
   const [formData, setFormData] = useState<{ [key: string]: string }>({})
+  const [text, setText] = useState('');
 
-  const entityType = route.params?.entityType
+  const entityType = route.params?.entityType as string;
   const entityConfig = entityType ? entityConfigurations[entityType] : null
 
   const handleInputChange = (field: string, value: string) => {
@@ -39,12 +37,12 @@ const ManageEntityScreen = () => {
         placeholder={field.placeholder}
         value={formData[field.name] || ''}
         onChangeText={(text) => handleInputChange(field.name, text)}
-        style={styles.input}
+        style={[styles.input, text ? styles.input : styles.italicPlaceholder]}
         keyboardType={field.type === 'number' ? 'numeric' : 'default'}
       />
     ))
   }
-
+  
   const handleSubmit = () => {
     // logic and data sent
     console.log(operation, formData)
@@ -63,32 +61,43 @@ const ManageEntityScreen = () => {
       <Text style={styles.header}>{`Manage ${entityType}`}</Text>
 
       {/* Operation Buttons */}
-      {['create', 'update', 'delete', 'find'].map((op) => (
+      {['create', 'update', 'delete', 'find'].map((operation) => (
         <Pressable
-          key={op}
-          onPress={() => setOperation(op)}
+          key={operation}
+          onPress={() => setOperation(operation)}
           style={styles.button}
         >
-          <Text>{op.charAt(0).toUpperCase() + op.slice(1)}</Text>
+          <Text>{operation.charAt(0).toUpperCase() + operation.slice(1)}</Text>
         </Pressable>
       ))}
 
-      {/* Conditionally render ID input for update, delete, and find operations */}
-      {['update', 'delete', 'find'].includes(operation) && (
-        <TextInput
-          placeholder="ID"
-          value={formData['id'] || ''}
-          onChangeText={(text) => handleInputChange('id', text)}
-          style={styles.input}
-          keyboardType="numeric"
-        />
+      {operation && (
+        <Text style={styles.titleText}>
+          {operation} a {entityType.slice(0, -1)}
+        </Text>
       )}
 
-      {renderFormFields()}
-      <Button
-        title={operation.charAt(0).toUpperCase() + operation.slice(1)}
-        onPress={handleSubmit}
-      />
+      {/* Conditionally render ID input for update, delete, and find operations */}
+      <View style={styles.inputContainer}>
+        {['update', 'delete', 'find'].includes(operation) && (
+          <TextInput
+            placeholder="ID"
+            value={formData['id'] || ''}
+            onChangeText={(text) => handleInputChange('id', text)}
+            style={[styles.input, text ? styles.input : styles.italicPlaceholder]}
+            keyboardType="numeric"
+          />
+        )}
+
+        {renderFormFields()}
+      </View>
+      {operation && (
+        <Pressable onPress={handleSubmit} style={styles.submitButton}>
+          <Text style={styles.submitText}>
+            Submit {operation} {entityType.slice(0, -1)}
+          </Text>
+        </Pressable>
+      )}
     </View>
   )
 }
@@ -100,17 +109,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
+  inputContainer: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 20,
+  },
   header: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
   },
   input: {
-    width: '100%',
+    width: 220,
     marginVertical: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
+    borderWidth: 2,
+    borderRadius: 6,
+    borderColor: '#000',
     padding: 10,
+  },
+  italicPlaceholder: {
+    fontStyle: 'italic', 
+    color: '#999',
   },
   button: {
     borderWidth: 2,
@@ -119,6 +138,25 @@ const styles = StyleSheet.create({
     marginVertical: 6,
     width: 180,
     backgroundColor: 'beige',
+  },
+  submitButton: {
+    borderWidth: 2,
+    borderRadius: 4,
+    padding: 10,
+    bottom: 180,
+    width: 180,
+    backgroundColor: 'orange',
+  },
+  submitText: {
+    textTransform: 'capitalize',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  titleText: {
+    textTransform: 'capitalize',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 20,
   },
 })
 

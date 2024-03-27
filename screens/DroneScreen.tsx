@@ -40,7 +40,7 @@ const DroneScreen: React.FC = () => {
     if (isAuthenticated) {
       navigation.navigate('Manage', { entityType: 'Drones' })
     } else if (Platform.OS === 'web') {
-      window.alert('Authentication required to manage drones, Please log in')
+      window.alert('Authentication required to manage drones, please log in')
       navigation.navigate('Login')
     } else {
       console.log('not authenticated')
