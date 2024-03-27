@@ -1,25 +1,19 @@
 import React, { useState } from 'react'
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Pressable,
-} from 'react-native'
+import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native'
 import { useRoute, RouteProp } from '@react-navigation/native'
 import { entityConfigurations } from '../config/entityConfigurations'
-import {
-  ManageEntityScreenParams,
-} from '../config/entityConfigurations'
+import { ManageEntityScreenParams } from '../config/entityConfigurations'
+import api from '../services/apiService'
+import axios from 'axios'
 
 const ManageEntityScreen = () => {
   const route =
     useRoute<RouteProp<{ params: ManageEntityScreenParams }, 'params'>>()
   const [operation, setOperation] = useState('')
   const [formData, setFormData] = useState<{ [key: string]: string }>({})
-  const [text, setText] = useState('');
+  const [text, setText] = useState('')
 
-  const entityType = route.params?.entityType as string;
+  const entityType = route.params?.entityType as string
   const entityConfig = entityType ? entityConfigurations[entityType] : null
 
   const handleInputChange = (field: string, value: string) => {
@@ -37,15 +31,47 @@ const ManageEntityScreen = () => {
         placeholder={field.placeholder}
         value={formData[field.name] || ''}
         onChangeText={(text) => handleInputChange(field.name, text)}
-        style={[styles.input, text ? styles.input : styles.italicPlaceholder]}
+        style={[styles.input, formData[field.name] ? {} : styles.italicPlaceholder]}
         keyboardType={field.type === 'number' ? 'numeric' : 'default'}
       />
     ))
   }
+
+  const apiRequest = async () => {
+    const url = `/${entityType.toLowerCase()}`;
   
+    try {
+      let response;
+  
+      switch (operation) {
+        case 'create':
+          response = await api.post(url, formData);
+          break;
+        case 'update':
+          response = await api.put(`${url}/${formData.id}`, formData);
+          break;
+        case 'delete':
+          response = await api.delete(`${url}/${formData.id}`);
+          break;
+        case 'find':
+          response = await api.get(`${url}/${formData.id}`);
+          break;
+        default:
+          console.log('No operation default switch state triggered');
+          return;
+      }
+  
+      console.log('Response:', response.data);
+
+    } catch (error) {
+      console.error('Request failed:', error);
+    }
+  };
+
   const handleSubmit = () => {
     // logic and data sent
     console.log(operation, formData)
+    apiRequest()
   }
 
   if (!entityType) {
@@ -84,7 +110,10 @@ const ManageEntityScreen = () => {
             placeholder="ID"
             value={formData['id'] || ''}
             onChangeText={(text) => handleInputChange('id', text)}
-            style={[styles.input, text ? styles.input : styles.italicPlaceholder]}
+            style={[
+              styles.input,
+              text ? styles.input : styles.italicPlaceholder,
+            ]}
             keyboardType="numeric"
           />
         )}
@@ -128,7 +157,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   italicPlaceholder: {
-    fontStyle: 'italic', 
+    fontStyle: 'italic',
     color: '#999',
   },
   button: {
