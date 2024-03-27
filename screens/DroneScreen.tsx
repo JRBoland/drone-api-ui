@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -13,25 +13,28 @@ import { useAuth } from '../utils/authContext'
 import { fetchDrones } from '../services/droneService'
 import { Drone, DroneApiResponse } from '../interfaces/drone'
 import { RootStackParamList } from '../interfaces/rootStackParamList'
+import { useFocusEffect } from '@react-navigation/native';
 
 const DroneScreen: React.FC = () => {
   const [drones, setDrones] = useState<Drone[]>([])
   const { isAuthenticated } = useAuth()
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response: DroneApiResponse = await fetchDrones()
-        console.log('data is', response)
-        setDrones(response.data)
-      } catch (error) {
-        console.error('Error fetching drones:', error)
-      }
-    }
-
-    fetchData()
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        try {
+          const response: DroneApiResponse = await fetchDrones();
+          console.log('data is', response);
+          setDrones(response.data);
+        } catch (error) {
+          console.error('Error fetching drones:', error);
+        }
+      };
+  
+      fetchData();
+    }, [])
+  );
 
   console.log('length of drones array:', drones.length)
 

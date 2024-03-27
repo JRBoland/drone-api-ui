@@ -5,19 +5,28 @@ import { entityConfigurations } from '../config/entityConfigurations'
 import { ManageEntityScreenParams } from '../config/entityConfigurations'
 import api from '../services/apiService'
 import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const ManageEntityScreen = () => {
   const route =
     useRoute<RouteProp<{ params: ManageEntityScreenParams }, 'params'>>()
   const [operation, setOperation] = useState('')
-  const [formData, setFormData] = useState<{ [key: string]: string }>({})
+  const [formData, setFormData] = useState<{ [key: string]: string | number }>({})
   const [text, setText] = useState('')
 
   const entityType = route.params?.entityType as string
   const entityConfig = entityType ? entityConfigurations[entityType] : null
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    let formattedValue: string | number = value;
+  
+    if (field === 'weight' && !isNaN(parseInt(value))) {
+      formattedValue = parseFloat(value);
+    } else if (field === 'age' && !isNaN(parseInt(value))) {
+      formattedValue = parseInt(value);
+    }
+  
+    setFormData((prev) => ({ ...prev, [field]: formattedValue }));
   }
 
   const renderFormFields = () => {
@@ -29,7 +38,7 @@ const ManageEntityScreen = () => {
       <TextInput
         key={field.name}
         placeholder={field.placeholder}
-        value={formData[field.name] || ''}
+        value={formData[field.name]?.toString() || ''}
         onChangeText={(text) => handleInputChange(field.name, text)}
         style={[styles.input, formData[field.name] ? {} : styles.italicPlaceholder]}
         keyboardType={field.type === 'number' ? 'numeric' : 'default'}
@@ -39,22 +48,36 @@ const ManageEntityScreen = () => {
 
   const apiRequest = async () => {
     const url = `/${entityType.toLowerCase()}`;
-  
+    
     try {
+      const token = await AsyncStorage.getItem('userToken')
+
+      if (!token) {
+        console.error('No auth token')
+        return
+      }
+
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+
+      console.log('Request URL:', url)
+      console.log('Request Data:', formData)
+      console.log('Authorization Token:', token)
       let response;
   
       switch (operation) {
         case 'create':
-          response = await api.post(url, formData);
+          response = await api.post(url, formData, config);
           break;
         case 'update':
-          response = await api.put(`${url}/${formData.id}`, formData);
+          response = await api.put(`${url}/${formData.id}`, formData,config);
           break;
         case 'delete':
-          response = await api.delete(`${url}/${formData.id}`);
+          response = await api.delete(`${url}/${formData.id}`, config);
           break;
         case 'find':
-          response = await api.get(`${url}/${formData.id}`);
+          response = await api.get(`${url}/${formData.id}`, config);
           break;
         default:
           console.log('No operation default switch state triggered');
@@ -108,7 +131,7 @@ const ManageEntityScreen = () => {
         {['update', 'delete', 'find'].includes(operation) && (
           <TextInput
             placeholder="ID"
-            value={formData['id'] || ''}
+            value={formData['id']?.toString() || ''}
             onChangeText={(text) => handleInputChange('id', text)}
             style={[
               styles.input,
@@ -159,6 +182,7 @@ const styles = StyleSheet.create({
   italicPlaceholder: {
     fontStyle: 'italic',
     color: '#999',
+    textTransform: 'capitalize',
   },
   button: {
     borderWidth: 2,
