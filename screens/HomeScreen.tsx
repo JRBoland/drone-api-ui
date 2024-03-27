@@ -60,7 +60,7 @@ const HomeScreen = ({ navigation }: any) => {
       </Pressable>
       </View>
       <Pressable
-        style={[styles.button, { backgroundColor: 'orange', marginTop: 24 }]}
+        style={[styles.button, isAuthenticated ? { backgroundColor: 'orange'} : { backgroundColor: 'lightgreen'}, { marginTop: 24 }]}
         onPress={handleAuthAction}
       >
         <Text style={styles.buttonText}>

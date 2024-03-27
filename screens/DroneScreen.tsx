@@ -26,7 +26,8 @@ const DroneScreen: React.FC = () => {
         try {
           const response: DroneApiResponse = await fetchDrones();
           console.log('data is', response);
-          setDrones(response.data);
+          const sortedDrones = response.data.sort((a, b) => a.id - b.id); // sorts drones by id
+          setDrones(sortedDrones);
         } catch (error) {
           console.error('Error fetching drones:', error);
         }

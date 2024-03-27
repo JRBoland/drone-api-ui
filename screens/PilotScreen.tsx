@@ -17,7 +17,8 @@ const PilotScreen = () => {
         try {
           const response: PilotApiResponse = await fetchPilots();
           console.log('data is', response);
-          setPilots(response.data);
+          const sortedPilots = response.data.sort((a, b) => a.id - b.id);
+          setPilots(sortedPilots);
         } catch (error) {
           console.error('Error fetching drones:', error);
         }

@@ -10,7 +10,7 @@ export const entityConfigurations: EntityConfigurations = {
     apiEndpoint: '/pilots',
     fields: [
       { name: 'name', placeholder: 'Pilot Name', type: 'text' },
-      { name: 'age', placeholder: 'age', type: 'number' },
+      { name: 'age', placeholder: 'Age', type: 'number' },
     ],
   },
 };

@@ -47,7 +47,7 @@ const ManageEntityScreen = () => {
   }
 
   const apiRequest = async () => {
-    const url = `/${entityType.toLowerCase()}`;
+    const urlBase = `/${entityType.toLowerCase()}`;
     
     try {
       const token = await AsyncStorage.getItem('userToken')
@@ -59,30 +59,42 @@ const ManageEntityScreen = () => {
 
       const config = {
         headers: { Authorization: `Bearer ${token}` },
+        'Content-Type': 'application/json', 
       }
 
-      console.log('Request URL:', url)
+      
+      let response;
+      
+      const { id, ...dataWithoutId } = formData;
+      const urlWithId = `${urlBase}/${id}`;
+
+      console.log('Request URL:', urlBase)
       console.log('Request Data:', formData)
       console.log('Authorization Token:', token)
-      let response;
-  
+
       switch (operation) {
         case 'create':
-          response = await api.post(url, formData, config);
-          break;
+            console.log('Request URL:', urlBase);
+            console.log('Request Data:', formData);
+            response = await api.post(urlBase, formData, config);
+            break;
         case 'update':
-          response = await api.put(`${url}/${formData.id}`, formData,config);
-          break;
+            console.log('Request URL:', urlWithId);
+            console.log('Request Data:', dataWithoutId);
+            response = await api.put(urlWithId, dataWithoutId, config);
+            break;
         case 'delete':
-          response = await api.delete(`${url}/${formData.id}`, config);
-          break;
+            console.log('Request URL:', urlWithId);
+            response = await api.delete(urlWithId, config);
+            break;
         case 'find':
-          response = await api.get(`${url}/${formData.id}`, config);
-          break;
+            console.log('Request URL:', urlWithId);
+            response = await api.get(urlWithId, config);
+            break;
         default:
-          console.log('No operation default switch state triggered');
-          return;
-      }
+            console.log('No operation default switch state triggered');
+            return;
+    }
   
       console.log('Response:', response.data);
 
