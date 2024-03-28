@@ -303,7 +303,8 @@ const styles = StyleSheet.create({
   submitButton: {
     borderWidth: 2,
     borderRadius: 4,
-    padding: 10,
+    padding: 14,
+    margin: 20,
     width: 180,
     backgroundColor: 'orange',
   },

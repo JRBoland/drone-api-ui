@@ -13,23 +13,40 @@ export const entityConfigurations: EntityConfigurations = {
       { name: 'age', placeholder: 'Age', type: 'number' },
     ],
   },
-};
+  Flights: {
+    apiEndpoint: '/flights',
+    fields: [
+      { name: 'pilot_id', placeholder: 'Pilot ID', type: 'number' },
+      { name: 'drone_id', placeholder: 'Drone ID', type: 'number' },
+      {
+        name: 'flight_location',
+        placeholder: 'Flight Location',
+        type: 'string',
+      },
+      {
+        name: 'footage_recorded',
+        placeholder: 'Footage recorded?',
+        type: 'boolean',
+      },
+    ],
+  },
+}
 
 export interface FieldConfig {
-  name: string;
-  placeholder: string;
-  type: string;
+  name: string
+  placeholder: string
+  type: string
 }
 
 export interface EntityConfig {
-  apiEndpoint: string;
-  fields: FieldConfig[];
+  apiEndpoint: string
+  fields: FieldConfig[]
 }
 
 export interface EntityConfigurations {
-  [key: string]: EntityConfig;
+  [key: string]: EntityConfig
 }
 
 export interface ManageEntityScreenParams {
-  entityType: keyof EntityConfigurations;
+  entityType: keyof EntityConfigurations
 }
