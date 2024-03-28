@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Pressable,
   Platform,
+  KeyboardAvoidingView,
 } from 'react-native'
 import { useRoute, RouteProp } from '@react-navigation/native'
 import {
@@ -14,6 +15,7 @@ import {
 } from '../config/entityConfigurations'
 import api from '../services/apiService'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const ManageEntityScreen: React.FC = () => {
   const route =
@@ -161,8 +163,7 @@ const ManageEntityScreen: React.FC = () => {
           response = await api.delete(urlWithId, config)
           break
         case 'find':
-          const searchParams = new URLSearchParams(nonEmptyFields
-          ).toString()
+          const searchParams = new URLSearchParams(nonEmptyFields).toString()
           const findUrl = `${urlBase}/search?${searchParams}`
           response = await api.get(findUrl, config)
           break
@@ -199,55 +200,65 @@ const ManageEntityScreen: React.FC = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>{`Manage ${entityType}`}</Text>
-      {['create', 'update', 'delete', 'find'].map((operation) => (
-        <Pressable
-          key={operation}
-          onPress={() => {
-            setOperation(operation)
-            setResponseMessage('')
-          }}
-          style={styles.button}
-        >
-          <Text>{operation.charAt(0).toUpperCase() + operation.slice(1)}</Text>
-        </Pressable>
-      ))}
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View style={styles.container}>
+        <Text style={styles.header}>{`Manage ${entityType}`}</Text>
+        {['create', 'update', 'delete', 'find'].map((operation) => (
+          <Pressable
+            key={operation}
+            onPress={() => {
+              setOperation(operation)
+              setResponseMessage('')
+            }}
+            style={styles.button}
+          >
+            <Text>
+              {operation.charAt(0).toUpperCase() + operation.slice(1)}
+            </Text>
+          </Pressable>
+        ))}
 
-      {operation && (
-        <Text style={styles.titleText}>
-          {operation} a {entityType.slice(0, -1)}
-        </Text>
-      )}
-      <View style={styles.responseMessageContainer}>
-        {responseMessage && (
-          <Text style={styles.responseText}>{responseMessage}</Text>
-        )}
-      </View>
-      <View style={styles.inputContainer}>
-        {['update', 'delete', 'find'].includes(operation) && (
-          <TextInput
-            placeholder="ID"
-            value={formData['id']?.toString() || ''}
-            onChangeText={(text) => handleInputChange('id', text)}
-            style={[
-              styles.input,
-              formData['id'] ? styles.input : styles.italicPlaceholder,
-            ]}
-            keyboardType="numeric"
-          />
-        )}
-
-        {renderFormFields()}
-      </View>
-      {operation && (
-        <Pressable onPress={apiRequest} style={styles.submitButton}>
-          <Text style={styles.submitText}>
-            Submit {operation} {entityType.slice(0, -1)}
+        {operation && (
+          <Text style={styles.titleText}>
+            {operation} a {entityType.slice(0, -1)}
           </Text>
-        </Pressable>
-      )}
-    </View>
+        )}
+        <View style={styles.responseMessageContainer}>
+          {responseMessage && (
+            <Text style={styles.responseText}>{responseMessage}</Text>
+          )}
+        </View>
+        <View style={styles.inputContainer}>
+          {['update', 'delete', 'find'].includes(operation) && (
+            <TextInput
+              placeholder="ID"
+              value={formData['id']?.toString() || ''}
+              onChangeText={(text) => handleInputChange('id', text)}
+              style={[
+                styles.input,
+                formData['id'] ? styles.input : styles.italicPlaceholder,
+              ]}
+              keyboardType="numeric"
+            />
+          )}
+
+          {renderFormFields()}
+        </View>
+        {operation && (
+          <Pressable
+            onPress={apiRequest}
+            style={({ pressed }) => [
+              styles.submitButton,
+              { backgroundColor: pressed ? '#FFA07A' : 'orange' },
+            ]}
+          >
+            <Text style={styles.submitText}>
+              Submit {operation} {entityType.slice(0, -1)}
+            </Text>
+          </Pressable>
+        )}
+      </View>
+    </ScrollView>
   )
 }
 
@@ -293,7 +304,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 4,
     padding: 10,
-    bottom: 180,
     width: 180,
     backgroundColor: 'orange',
   },
