@@ -57,7 +57,6 @@ const DroneScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
         <Pressable style={styles.button} onPress={handleManageDrones}>
           <Text style={styles.buttonText}>𝌶 Manage Drones</Text>
         </Pressable>
@@ -72,7 +71,6 @@ const DroneScreen: React.FC = () => {
             >{`ID: ${item.id}, Name: ${item.name}, Weight: ${item.weight}`}</Text>
           )}
         />
-      </ScrollView>
     </View>
   )
 }
