@@ -64,11 +64,19 @@ const ManageEntityScreen: React.FC = () => {
     operation: string,
     entityType: string
   ): string => {
-    // Construct the title from the entityType and operation, adjusting case as needed
-    let title = `${entityType.charAt(0).toUpperCase() + entityType.slice(1, -1)} ${
-      operation.charAt(0).toUpperCase() + operation.slice(1)
-    }d:`
+    // Construct the title from the entityType and operation, adjusting the word as needed
+    let operationWord = operation === 'find' ? 'found' : `${operation}d`
+    let title = `${
+      entityType.charAt(0).toUpperCase() + entityType.slice(1, -1)
+    } ${operationWord.charAt(0).toUpperCase() + operationWord.slice(1)}:`
     let formattedResponse = title + '\n\n'
+
+    // Different message for delete operation
+    if (operation === 'delete' && responseData.id) {
+      return `${
+        entityType.charAt(0).toUpperCase() + entityType.slice(1, -1)
+      } #${responseData.id} deleted.`
+    }
 
     // A recursive function to format nested objects correctly
     const formatObject = (obj: any): string => {
@@ -89,7 +97,7 @@ const ManageEntityScreen: React.FC = () => {
           }
         })
         .filter((line) => line)
-        .join('\n') 
+        .join('\n')
     }
 
     // If there's a direct 'message' property, add it first
@@ -129,6 +137,15 @@ const ManageEntityScreen: React.FC = () => {
         },
       }
 
+      // Only include non-empty fields in the search request
+      const nonEmptyFields = Object.entries(formData).reduce(
+        (acc, [key, value]) => {
+          if (value) acc[key] = value // Only add non-empty values
+          return acc
+        },
+        {}
+      )
+
       let response
       const { id, ...dataWithoutId } = formData
       const urlWithId = id ? `${urlBase}/${id}` : urlBase
@@ -144,8 +161,7 @@ const ManageEntityScreen: React.FC = () => {
           response = await api.delete(urlWithId, config)
           break
         case 'find':
-          const searchParams = new URLSearchParams(
-            Object.entries(formData).map(([key, value]) => [key, String(value)])
+          const searchParams = new URLSearchParams(nonEmptyFields
           ).toString()
           const findUrl = `${urlBase}/search?${searchParams}`
           response = await api.get(findUrl, config)

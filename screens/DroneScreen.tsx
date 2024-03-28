@@ -13,7 +13,8 @@ import { useAuth } from '../utils/authContext'
 import { fetchDrones } from '../services/droneService'
 import { Drone, DroneApiResponse } from '../interfaces/drone'
 import { RootStackParamList } from '../interfaces/rootStackParamList'
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const DroneScreen: React.FC = () => {
   const [drones, setDrones] = useState<Drone[]>([])
@@ -24,18 +25,18 @@ const DroneScreen: React.FC = () => {
     useCallback(() => {
       const fetchData = async () => {
         try {
-          const response: DroneApiResponse = await fetchDrones();
-          console.log('data is', response);
-          const sortedDrones = response.data.sort((a, b) => a.id - b.id); // sorts drones by id
-          setDrones(sortedDrones);
+          const response: DroneApiResponse = await fetchDrones()
+          console.log('data is', response)
+          const sortedDrones = response.data.sort((a, b) => a.id - b.id) // sorts drones by id
+          setDrones(sortedDrones)
         } catch (error) {
-          console.error('Error fetching drones:', error);
+          console.error('Error fetching drones:', error)
         }
-      };
-  
-      fetchData();
+      }
+
+      fetchData()
     }, [])
-  );
+  )
 
   console.log('length of drones array:', drones.length)
 
@@ -56,19 +57,22 @@ const DroneScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.button} onPress={handleManageDrones}>
-        <Text style={styles.buttonText}>𝌶 Manage Drones</Text>
-      </Pressable>
-      <FlatList
-        data={drones}
-        ListEmptyComponent={<Text style={styles.text}>No drones found</Text>}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <Text
-            style={styles.text}
-          >{`ID: ${item.id}, Name: ${item.name}, Weight: ${item.weight}`}</Text>
-        )}
-      />
+      <ScrollView>
+        <Pressable style={styles.button} onPress={handleManageDrones}>
+          <Text style={styles.buttonText}>𝌶 Manage Drones</Text>
+        </Pressable>
+
+        <FlatList
+          data={drones}
+          ListEmptyComponent={<Text style={styles.text}>No drones found</Text>}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <Text
+              style={styles.text}
+            >{`ID: ${item.id}, Name: ${item.name}, Weight: ${item.weight}`}</Text>
+          )}
+        />
+      </ScrollView>
     </View>
   )
 }
