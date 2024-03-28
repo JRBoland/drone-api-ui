@@ -1,32 +1,42 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native'
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Pressable,
+  Platform,
+} from 'react-native'
 import { useRoute, RouteProp } from '@react-navigation/native'
-import { entityConfigurations } from '../config/entityConfigurations'
-import { ManageEntityScreenParams } from '../config/entityConfigurations'
+import {
+  entityConfigurations,
+  ManageEntityScreenParams,
+} from '../config/entityConfigurations'
 import api from '../services/apiService'
-import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-const ManageEntityScreen = () => {
+const ManageEntityScreen: React.FC = () => {
   const route =
     useRoute<RouteProp<{ params: ManageEntityScreenParams }, 'params'>>()
   const [operation, setOperation] = useState('')
-  const [formData, setFormData] = useState<{ [key: string]: string | number }>({})
-  const [text, setText] = useState('')
+  const [formData, setFormData] = useState<{ [key: string]: string | number }>(
+    {}
+  )
+  const [responseMessage, setResponseMessage] = useState('')
 
   const entityType = route.params?.entityType as string
   const entityConfig = entityType ? entityConfigurations[entityType] : null
 
   const handleInputChange = (field: string, value: string) => {
-    let formattedValue: string | number = value;
-  
+    let formattedValue: string | number = value
+
     if (field === 'weight' && !isNaN(parseInt(value))) {
-      formattedValue = parseFloat(value);
+      formattedValue = parseFloat(value)
     } else if (field === 'age' && !isNaN(parseInt(value))) {
-      formattedValue = parseInt(value);
+      formattedValue = parseInt(value)
     }
-  
-    setFormData((prev) => ({ ...prev, [field]: formattedValue }));
+
+    setFormData((prev) => ({ ...prev, [field]: formattedValue }))
   }
 
   const renderFormFields = () => {
@@ -40,73 +50,128 @@ const ManageEntityScreen = () => {
         placeholder={field.placeholder}
         value={formData[field.name]?.toString() || ''}
         onChangeText={(text) => handleInputChange(field.name, text)}
-        style={[styles.input, formData[field.name] ? {} : styles.italicPlaceholder]}
+        style={[
+          styles.input,
+          formData[field.name] ? {} : styles.italicPlaceholder,
+        ]}
         keyboardType={field.type === 'number' ? 'numeric' : 'default'}
       />
     ))
   }
 
+  const formatResponseData = (
+    responseData: any,
+    operation: string,
+    entityType: string
+  ): string => {
+    // Construct the title from the entityType and operation, adjusting case as needed
+    let title = `${entityType.charAt(0).toUpperCase() + entityType.slice(1, -1)} ${
+      operation.charAt(0).toUpperCase() + operation.slice(1)
+    }d:`
+    let formattedResponse = title + '\n\n'
+
+    // A recursive function to format nested objects correctly
+    const formatObject = (obj: any): string => {
+      return Object.entries(obj)
+        .map(([key, value]) => {
+          // Skip the 'message' field for direct formatting
+          if (key === 'message') return ''
+          // Capitalize the first letter of each key
+          let formattedKey = key.charAt(0).toUpperCase() + key.slice(1)
+          // If the value is an object, recursively format it
+          if (typeof value === 'object' && value !== null) {
+            return `${formattedKey}:\n${formatObject(value).replace(
+              /^/gm,
+              '  '
+            )}`
+          } else {
+            return `${formattedKey}: ${value}`
+          }
+        })
+        .filter((line) => line)
+        .join('\n') 
+    }
+
+    // If there's a direct 'message' property, add it first
+    if (responseData.message) {
+      formattedResponse += `${responseData.message}\n\n`
+    }
+
+    // Format each top-level property in responseData, assuming the actual data might be nested
+    Object.entries(responseData).forEach(([key, value]) => {
+      if (key !== 'message') {
+        // Skip 'message' since it's already handled
+        if (typeof value === 'object' && value !== null) {
+          formattedResponse += formatObject(value)
+        } else {
+          let formattedKey = key.charAt(0).toUpperCase() + key.slice(1)
+          formattedResponse += `${formattedKey}: ${value}\n`
+        }
+      }
+    })
+
+    return formattedResponse.trim() // Trim trailing whitespace
+  }
+
   const apiRequest = async () => {
-    const urlBase = `/${entityType.toLowerCase()}`;
-    
+    const urlBase = `/${entityType.toLowerCase()}`
     try {
       const token = await AsyncStorage.getItem('userToken')
-
       if (!token) {
-        console.error('No auth token')
+        setResponseMessage('No auth token')
         return
       }
 
       const config = {
-        headers: { Authorization: `Bearer ${token}` },
-        'Content-Type': 'application/json', 
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       }
 
-      
-      let response;
-      
-      const { id, ...dataWithoutId } = formData;
-      const urlWithId = `${urlBase}/${id}`;
-
-      console.log('Request URL:', urlBase)
-      console.log('Request Data:', formData)
-      console.log('Authorization Token:', token)
+      let response
+      const { id, ...dataWithoutId } = formData
+      const urlWithId = id ? `${urlBase}/${id}` : urlBase
 
       switch (operation) {
         case 'create':
-            console.log('Request URL:', urlBase);
-            console.log('Request Data:', formData);
-            response = await api.post(urlBase, formData, config);
-            break;
+          response = await api.post(urlBase, formData, config)
+          break
         case 'update':
-            console.log('Request URL:', urlWithId);
-            console.log('Request Data:', dataWithoutId);
-            response = await api.put(urlWithId, dataWithoutId, config);
-            break;
+          response = await api.put(urlWithId, dataWithoutId, config)
+          break
         case 'delete':
-            console.log('Request URL:', urlWithId);
-            response = await api.delete(urlWithId, config);
-            break;
+          response = await api.delete(urlWithId, config)
+          break
         case 'find':
-            console.log('Request URL:', urlWithId);
-            response = await api.get(urlWithId, config);
-            break;
+          const searchParams = new URLSearchParams(
+            Object.entries(formData).map(([key, value]) => [key, String(value)])
+          ).toString()
+          const findUrl = `${urlBase}/search?${searchParams}`
+          response = await api.get(findUrl, config)
+          break
         default:
-            console.log('No operation default switch state triggered');
-            return;
-    }
-  
-      console.log('Response:', response.data);
+          console.log('No operation default switch state triggered')
+          return
+      }
 
-    } catch (error) {
-      console.error('Request failed:', error);
+      if (response && response.data) {
+        // Assuming the API always wraps responses in a 'data' field
+        const responseData = response.data
+        const formattedData = formatResponseData(
+          responseData,
+          operation,
+          entityType
+        )
+        console.log('Response Data:', responseData)
+        setResponseMessage(formattedData)
+      } else {
+        setResponseMessage('Unexpected response format or no data.')
+      }
+    } catch (error: any) {
+      console.error('Request failed:', error)
+      setResponseMessage(`Error: ${error.message}`)
     }
-  };
-
-  const handleSubmit = () => {
-    // logic and data sent
-    console.log(operation, formData)
-    apiRequest()
   }
 
   if (!entityType) {
@@ -120,12 +185,13 @@ const ManageEntityScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{`Manage ${entityType}`}</Text>
-
-      {/* Operation Buttons */}
       {['create', 'update', 'delete', 'find'].map((operation) => (
         <Pressable
           key={operation}
-          onPress={() => setOperation(operation)}
+          onPress={() => {
+            setOperation(operation)
+            setResponseMessage('')
+          }}
           style={styles.button}
         >
           <Text>{operation.charAt(0).toUpperCase() + operation.slice(1)}</Text>
@@ -137,8 +203,11 @@ const ManageEntityScreen = () => {
           {operation} a {entityType.slice(0, -1)}
         </Text>
       )}
-
-      {/* Conditionally render ID input for update, delete, and find operations */}
+      <View style={styles.responseMessageContainer}>
+        {responseMessage && (
+          <Text style={styles.responseText}>{responseMessage}</Text>
+        )}
+      </View>
       <View style={styles.inputContainer}>
         {['update', 'delete', 'find'].includes(operation) && (
           <TextInput
@@ -147,7 +216,7 @@ const ManageEntityScreen = () => {
             onChangeText={(text) => handleInputChange('id', text)}
             style={[
               styles.input,
-              text ? styles.input : styles.italicPlaceholder,
+              formData['id'] ? styles.input : styles.italicPlaceholder,
             ]}
             keyboardType="numeric"
           />
@@ -156,7 +225,7 @@ const ManageEntityScreen = () => {
         {renderFormFields()}
       </View>
       {operation && (
-        <Pressable onPress={handleSubmit} style={styles.submitButton}>
+        <Pressable onPress={apiRequest} style={styles.submitButton}>
           <Text style={styles.submitText}>
             Submit {operation} {entityType.slice(0, -1)}
           </Text>
@@ -222,6 +291,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 20,
+  },
+  responseText: {
+    padding: 10,
+    backgroundColor: 'beige',
+    borderRadius: 6,
+    borderWidth: 2,
+    color: '#000',
+    textAlign: 'left',
+  },
+  responseMessageContainer: {
+    marginTop: 20,
+    borderRadius: 5,
   },
 })
 
