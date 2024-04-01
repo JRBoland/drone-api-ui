@@ -16,23 +16,27 @@ import {
 import api from '../services/apiService'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ScrollView } from 'react-native-gesture-handler'
+import BouncyCheckbox from 'react-native-bouncy-checkbox'
 
 const ManageEntityScreen: React.FC = () => {
   const route =
     useRoute<RouteProp<{ params: ManageEntityScreenParams }, 'params'>>()
   const [operation, setOperation] = useState('')
-  const [formData, setFormData] = useState<{ [key: string]: string | number }>(
-    {}
-  )
+  const [formData, setFormData] = useState<{
+    [key: string]: string | number | boolean
+  }>({})
   const [responseMessage, setResponseMessage] = useState('')
+  const [booleanField, setBooleanField] = useState(false)
 
   const entityType = route.params?.entityType as string
   const entityConfig = entityType ? entityConfigurations[entityType] : null
 
   const handleInputChange = (field: string, value: string) => {
-    let formattedValue: string | number = value
+    let formattedValue: string | number | boolean = value
 
-    if (field === 'weight' && !isNaN(parseInt(value))) {
+    if (field.endsWith('id') && !isNaN(parseInt(value))) {
+      formattedValue = parseInt(value)
+    } else if (field === 'weight' && !isNaN(parseFloat(value))) {
       formattedValue = parseFloat(value)
     } else if (field === 'age' && !isNaN(parseInt(value))) {
       formattedValue = parseInt(value)
@@ -46,19 +50,46 @@ const ManageEntityScreen: React.FC = () => {
       return null
     }
 
-    return entityConfig.fields.map((field) => (
-      <TextInput
-        key={field.name}
-        placeholder={field.placeholder}
-        value={formData[field.name]?.toString() || ''}
-        onChangeText={(text) => handleInputChange(field.name, text)}
-        style={[
-          styles.input,
-          formData[field.name] ? {} : styles.italicPlaceholder,
-        ]}
-        keyboardType={field.type === 'number' ? 'numeric' : 'default'}
-      />
-    ))
+    return entityConfig.fields.map((field) => {
+      // renders checkbox if boolean
+      if (field.type === 'boolean') {
+        return (
+          <View key={field.name} style={styles.fieldContainer}>
+            <BouncyCheckbox
+              isChecked={formData[field.name] === true}
+              text={field.placeholder}
+              textStyle={styles.checkboxText}
+              style={styles.checkbox}
+              iconStyle={styles.icon}
+              innerIconStyle={{
+                borderRadius: 4,
+              }}
+              onPress={(isChecked) => {
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  [field.name]: isChecked,
+                }))
+              }}
+            />
+          </View>
+        )
+      } else {
+        // renders rest of fields
+        return (
+          <TextInput
+            key={field.name}
+            placeholder={field.placeholder}
+            value={formData[field.name]?.toString() || ''}
+            onChangeText={(text) => handleInputChange(field.name, text)}
+            style={[
+              styles.input,
+              formData[field.name] ? {} : styles.italicPlaceholder,
+            ]}
+            keyboardType={field.type === 'number' ? 'numeric' : 'default'}
+          />
+        )
+      }
+    })
   }
 
   const formatResponseData = (
@@ -227,8 +258,9 @@ const ManageEntityScreen: React.FC = () => {
             </Text>
             <Text style={styles.instructionsText}>
               Fill in the relevant fields below to {operation} a{' '}
-              {entityType.slice(0, -1)}:
+              {entityType.slice(0, -1)}.
             </Text>
+          
           </View>
         )}
 
@@ -343,6 +375,30 @@ const styles = StyleSheet.create({
     width: 200,
     fontStyle: 'italic',
     margin: 20,
+  },
+  fieldContainer: {
+    flexDirection: 'row',
+    textAlign: 'left',
+    marginVertical: 10,
+    width: 220,
+    borderColor: '#000',
+    paddingVertical: 10,
+  },
+  checkbox: {
+    flexDirection: 'row-reverse',
+    gap: 20,
+    borderRadius: 4,
+  },
+  checkboxText: {
+    color: '#000',
+    textTransform: 'capitalize',
+    fontSize: 14,
+    textDecorationLine: 'none',
+  },
+  icon: {
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: 'orange',
   },
 })
 

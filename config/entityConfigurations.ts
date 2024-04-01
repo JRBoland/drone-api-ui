@@ -18,12 +18,12 @@ export const entityConfigurations: EntityConfigurations = {
     fields: [
       { name: 'pilot_id', placeholder: 'Pilot ID', type: 'number' },
       { name: 'drone_id', placeholder: 'Drone ID', type: 'number' },
-      {
+      { // not required to create an entry
         name: 'flight_location',
         placeholder: 'Flight Location',
         type: 'string',
       },
-      {
+      { // not required to create an entry
         name: 'footage_recorded',
         placeholder: 'Footage recorded?',
         type: 'boolean',
