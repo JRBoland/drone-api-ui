@@ -45,22 +45,29 @@ const FlightScreen = () => {
       navigation.navigate('Login')
     } else {
       console.log('not authenticated')
-      Alert.alert('Authentication required to manage flights', 'Please log in', [
-        { text: 'OK', onPress: () => navigation.navigate('Login') },
-      ])
+      Alert.alert(
+        'Authentication required to manage flights',
+        'Please log in',
+        [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
+      )
     }
   }
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.button} onPress={handleManageFlights}>
-        <Text style={styles.buttonText}>𝌶 Manage Flights</Text>
-      </Pressable>
-      {flights.length === 0 ? (
-        <Text style={styles.text}>No flights found.</Text>
-      ) : (
+      <View style={styles.manageContainer}>
+        <Pressable style={styles.button} onPress={handleManageFlights}>
+          <Text style={styles.buttonText}>𝌶 Manage Flights</Text>
+        </Pressable>
+        <Text style={styles.instructionsText}>
+          Click for more options on managing flights.
+        </Text>
+      </View>
+
+      
         <FlatList
           data={flights}
+          ListEmptyComponent={<Text style={styles.text}>No flights found</Text>}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <Text
@@ -68,7 +75,6 @@ const FlightScreen = () => {
             >{`ID: ${item.id}, Flight Date: ${item.flight_date}, Drone ID: ${item.drone_id}, Pilot ID: ${item.pilot_id}, Location: ${item.flight_location}, Footage Recorded: ${item.footage_recorded}`}</Text>
           )}
         />
-      )}
     </View>
   )
 }
@@ -98,6 +104,14 @@ const styles = StyleSheet.create({
     color: '#000',
     backgroundColor: '#e0e0e0',
     padding: 10,
+  },
+  manageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  instructionsText: {
+    width: 160,
+    fontStyle: 'italic',
   },
 })
 

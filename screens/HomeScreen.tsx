@@ -48,6 +48,7 @@ const HomeScreen = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Hello {username} 👋 </Text>
+      <Text style={styles.instructionsText}>Select an option: </Text>
       <View style={styles.buttonsContainer}>
       <Pressable style={styles.button} onPress={handleGetDrones}>
         <Text style={styles.buttonText}>Drones</Text>
@@ -105,6 +106,12 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     marginVertical: 36
+  },
+  instructionsText: {
+    fontSize: 20,
+    width: 180,
+    marginTop: 12,
+    textAlign: 'left'
   }
 })
 

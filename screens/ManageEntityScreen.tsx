@@ -203,6 +203,7 @@ const ManageEntityScreen: React.FC = () => {
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={styles.container}>
         <Text style={styles.header}>{`Manage ${entityType}`}</Text>
+        <Text style={styles.instructionsText}>Click an action below:</Text>
         {['create', 'update', 'delete', 'find'].map((operation) => (
           <Pressable
             key={operation}
@@ -213,16 +214,24 @@ const ManageEntityScreen: React.FC = () => {
             style={styles.button}
           >
             <Text>
-              {operation.charAt(0).toUpperCase() + operation.slice(1)}
+              {operation.charAt(0).toUpperCase() + operation.slice(1)} a{' '}
+              {entityType.slice(0, -1)}
             </Text>
           </Pressable>
         ))}
-
+        {/* Manage an entity:*/}
         {operation && (
-          <Text style={styles.titleText}>
-            {operation} a {entityType.slice(0, -1)}
-          </Text>
+          <View>
+            <Text style={styles.titleText}>
+              {operation} a {entityType.slice(0, -1)}
+            </Text>
+            <Text style={styles.instructionsText}>
+              Fill in the relevant fields below to {operation} a{' '}
+              {entityType.slice(0, -1)}:
+            </Text>
+          </View>
         )}
+
         <View style={styles.responseMessageContainer}>
           {responseMessage && (
             <Text style={styles.responseText}>{responseMessage}</Text>
@@ -272,7 +281,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flex: 1,
     alignItems: 'center',
-    padding: 20,
+    margin: 10,
   },
   header: {
     fontSize: 22,
@@ -328,8 +337,12 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   responseMessageContainer: {
-    marginTop: 20,
     borderRadius: 5,
+  },
+  instructionsText: {
+    width: 200,
+    fontStyle: 'italic',
+    margin: 20,
   },
 })
 

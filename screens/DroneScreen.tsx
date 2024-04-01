@@ -57,20 +57,23 @@ const DroneScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.manageContainer}>
         <Pressable style={styles.button} onPress={handleManageDrones}>
           <Text style={styles.buttonText}>𝌶 Manage Drones</Text>
         </Pressable>
+        <Text style={styles.instructionsText}>Click for more options on managing drones.</Text>
+      </View>
 
-        <FlatList
-          data={drones}
-          ListEmptyComponent={<Text style={styles.text}>No drones found</Text>}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <Text
-              style={styles.text}
-            >{`ID: ${item.id}, Name: ${item.name}, Weight: ${item.weight}`}</Text>
-          )}
-        />
+      <FlatList
+        data={drones}
+        ListEmptyComponent={<Text style={styles.text}>No drones found</Text>}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <Text
+            style={styles.text}
+          >{`ID: ${item.id}, Name: ${item.name}, Weight: ${item.weight}`}</Text>
+        )}
+      />
     </View>
   )
 }
@@ -101,6 +104,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0e0e0',
     padding: 10,
   },
+  manageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  instructionsText: {
+    width: 160,
+    fontStyle: 'italic',
+  }
 })
 
 export default DroneScreen

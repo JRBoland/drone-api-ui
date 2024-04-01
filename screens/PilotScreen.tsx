@@ -1,13 +1,25 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Pressable, Platform, Alert } from 'react-native';
-import { fetchPilots } from '../services/pilotService';
+import React, { useCallback, useEffect, useState } from 'react'
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Pressable,
+  Platform,
+  Alert,
+} from 'react-native'
+import { fetchPilots } from '../services/pilotService'
 import { Pilot, PilotApiResponse } from '../interfaces/pilot'
 import { useAuth } from '../utils/authContext'
-import { NavigationProp, useFocusEffect, useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../interfaces/rootStackParamList';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native'
+import { RootStackParamList } from '../interfaces/rootStackParamList'
 
 const PilotScreen = () => {
-  const [pilots, setPilots] = useState<Pilot[]>([]);
+  const [pilots, setPilots] = useState<Pilot[]>([])
   const { isAuthenticated } = useAuth()
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
 
@@ -15,18 +27,18 @@ const PilotScreen = () => {
     useCallback(() => {
       const fetchData = async () => {
         try {
-          const response: PilotApiResponse = await fetchPilots();
-          console.log('data is', response);
-          const sortedPilots = response.data.sort((a, b) => a.id - b.id);
-          setPilots(sortedPilots);
+          const response: PilotApiResponse = await fetchPilots()
+          console.log('data is', response)
+          const sortedPilots = response.data.sort((a, b) => a.id - b.id)
+          setPilots(sortedPilots)
         } catch (error) {
-          console.error('Error fetching drones:', error);
+          console.error('Error fetching drones:', error)
         }
-      };
-  
-      fetchData();
+      }
+
+      fetchData()
     }, [])
-  );
+  )
 
   const handleManagePilots = () => {
     console.log('clicked')
@@ -43,13 +55,19 @@ const PilotScreen = () => {
     }
   }
 
-  console.log('length of pilots array:', pilots.length);
+  console.log('length of pilots array:', pilots.length)
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.button} onPress={handleManagePilots}>
-        <Text style={styles.buttonText}>𝌶 Manage Pilots</Text>
-      </Pressable>
+      <View style={styles.manageContainer}>
+        <Pressable style={styles.button} onPress={handleManagePilots}>
+          <Text style={styles.buttonText}>𝌶 Manage Pilots</Text>
+        </Pressable>
+        <Text style={styles.instructionsText}>
+          Click for more options on managing pilots.
+        </Text>
+      </View>
+
       <FlatList
         data={pilots}
         ListEmptyComponent={<Text style={styles.text}>No pilots found</Text>}
@@ -61,8 +79,8 @@ const PilotScreen = () => {
         )}
       />
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -90,6 +108,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0e0e0',
     padding: 10,
   },
-});
+  manageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  instructionsText: {
+    width: 160,
+    fontStyle: 'italic',
+  },
+  
+})
 
-export default PilotScreen;
+export default PilotScreen
