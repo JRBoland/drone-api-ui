@@ -8,7 +8,7 @@ import {
   Platform,
   KeyboardAvoidingView,
 } from 'react-native'
-import { useRoute, RouteProp } from '@react-navigation/native'
+import { useRoute, RouteProp, useNavigation } from '@react-navigation/native'
 import {
   entityConfigurations,
   ManageEntityScreenParams,
@@ -29,6 +29,7 @@ const ManageEntityScreen: React.FC = () => {
 
   const entityType = route.params?.entityType as string
   const entityConfig = entityType ? entityConfigurations[entityType] : null
+  const navigation = useNavigation()
 
   const handleInputChange = (field: string, value: string) => {
     let formattedValue: string | number | boolean = value
@@ -323,6 +324,19 @@ const ManageEntityScreen: React.FC = () => {
             </Text>
           </Pressable>
         )}
+        {/*Probably unneccssary? 
+        <Pressable
+            onPress={() => navigation.goBack()}
+            style={({ pressed }) => [
+              styles.submitButton,
+              { backgroundColor: pressed ? '#d8d8d8' : '#00cecb' },
+            ]}
+          >
+            <Text style={styles.submitText}>
+              Back to {entityType}
+            </Text>
+          </Pressable>
+          */}
       </View>
     </ScrollView>
   )
@@ -334,17 +348,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: "#ffffea"
+    backgroundColor: "#FFFAF0"
   },
   inputContainer: {
     flex: 1,
     alignItems: 'center',
+    
     margin: 10,
   },
   header: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 20,
+    margin: 20,
   },
   input: {
     width: 220,
@@ -352,6 +367,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 6,
     borderColor: '#000',
+    backgroundColor: "#FFFFEA",
     padding: 10,
   },
   italicPlaceholder: {
@@ -373,7 +389,7 @@ const styles = StyleSheet.create({
     padding: 14,
     margin: 40,
     width: 'auto',
-    backgroundColor: 'orange',
+    minWidth: 180,
   },
   submitText: {
     textTransform: 'capitalize',

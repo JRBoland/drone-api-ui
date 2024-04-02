@@ -67,17 +67,27 @@ const PilotScreen = () => {
           Click for more options on managing pilots.
         </Text>
       </View>
-
-      <FlatList
-        data={pilots}
-        ListEmptyComponent={<Text style={styles.text}>No pilots found</Text>}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <Text
-            style={styles.text}
-          >{`ID: ${item.id}, Name: ${item.name}, Age: ${item.age}`}</Text>
-        )}
-      />
+      <View style={styles.table}>
+        <FlatList
+          data={pilots}
+          ListEmptyComponent={<Text style={styles.text}>No pilots found</Text>}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.tableRow}>
+              <Text style={styles.tableCell}>{item.id}</Text>
+              <Text style={styles.tableCell}>{item.name}</Text>
+              <Text style={styles.tableCell}>{item.age}</Text>
+            </View>
+          )}
+          ListHeaderComponent={() => (
+            <View style={styles.tableHeader}>
+              <Text style={styles.headerText}>ID</Text>
+              <Text style={styles.headerText}>Name</Text>
+              <Text style={styles.headerText}>Age</Text>
+            </View>
+          )}
+        />
+      </View>
     </View>
   )
 }
@@ -85,16 +95,16 @@ const PilotScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 20,
-    backgroundColor: '#f0f0f0',
+    padding: 20,
+    backgroundColor: '#FFF',
   },
   button: {
     borderWidth: 2,
     borderRadius: 4,
     padding: 10,
-    margin: 10,
+    margin: 20,
     width: 180,
-    backgroundColor: 'beige',
+    backgroundColor: '#ffed66',
   },
   buttonText: {
     color: 'black',
@@ -103,10 +113,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   text: {
-    margin: 10,
+    marginTop: 4,
+    marginHorizontal: 10,
     color: '#000',
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#d8d8d8',
     padding: 10,
+    borderRadius: 6,
   },
   manageContainer: {
     flexDirection: 'row',
@@ -116,7 +128,38 @@ const styles = StyleSheet.create({
     width: 160,
     fontStyle: 'italic',
   },
-  
+  tableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 2,
+    borderLeftWidth: 2,
+    borderColor: '#d8d8d8',
+  },
+  tableCell: {
+    flex: 1,
+    textAlign: 'left',
+    padding: 10,
+    borderRightWidth: 2,
+    borderColor: '#d8d8d8',
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 2,
+    borderBottomColor: '#00cecb',
+    paddingVertical: 10,
+    backgroundColor: '#ffed66',
+    textDecorationLine: 'underline',
+  },
+  headerText: {
+    flex: 1,
+    textAlign: 'left',
+    fontWeight: 'bold',
+    paddingLeft: 10,
+  },
+  table: {
+    margin: 20,
+  },
 })
 
 export default PilotScreen

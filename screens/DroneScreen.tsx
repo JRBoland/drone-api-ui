@@ -61,19 +61,31 @@ const DroneScreen: React.FC = () => {
         <Pressable style={styles.button} onPress={handleManageDrones}>
           <Text style={styles.buttonText}>𝌶 Manage Drones</Text>
         </Pressable>
-        <Text style={styles.instructionsText}>Click for more options on managing drones.</Text>
+        <Text style={styles.instructionsText}>
+          Click for more options on managing drones.
+        </Text>
       </View>
-
+    <View style={styles.table}>
       <FlatList
         data={drones}
         ListEmptyComponent={<Text style={styles.text}>No drones found</Text>}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Text
-            style={styles.text}
-          >{`ID: ${item.id}, Name: ${item.name}, Weight: ${item.weight}`}</Text>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableCell}>{item.id}</Text>
+            <Text style={styles.tableCell}>{item.name}</Text>
+            <Text style={styles.tableCell}>{item.weight}</Text>
+          </View>
+        )}
+        ListHeaderComponent={() => (
+          <View style={styles.tableHeader}>
+            <Text style={styles.headerText}>ID</Text>
+            <Text style={styles.headerText}>Name</Text>
+            <Text style={styles.headerText}>Weight</Text>
+          </View>
         )}
       />
+      </View>
     </View>
   )
 }
@@ -82,13 +94,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#ffffea',
+    backgroundColor: '#FFF',
   },
   button: {
     borderWidth: 2,
     borderRadius: 4,
     padding: 10,
-    margin: 10,
+    margin: 20,
     width: 180,
     backgroundColor: '#ffed66',
   },
@@ -108,11 +120,43 @@ const styles = StyleSheet.create({
   },
   manageContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   instructionsText: {
     width: 160,
     fontStyle: 'italic',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 2,
+    borderLeftWidth: 2,
+    borderColor: '#d8d8d8',
+  },
+  tableCell: {
+    flex: 1,
+    textAlign: 'left',
+    padding: 10,
+    borderRightWidth: 2,
+    borderColor: '#d8d8d8',
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 2,
+    borderBottomColor: '#00cecb',
+    paddingVertical: 10,
+    backgroundColor: '#ffed66',
+    textDecorationLine: 'underline'
+  },
+  headerText: {
+    flex: 1,
+    textAlign: 'left',
+    fontWeight: 'bold',
+    paddingLeft: 10,
+  },
+  table: {
+    margin: 20,
   }
 })
 
