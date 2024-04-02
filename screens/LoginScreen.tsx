@@ -71,6 +71,11 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.buttonText}>Submit</Text>
           </Pressable>
         </View>
+        <View style={styles.buttonContainer}>
+          <Pressable style={styles.button} onPress={() => navigation.navigate('Home')}>
+            <Text style={styles.buttonText}>Continue as Guest</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   )
@@ -127,6 +132,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: 'center',
+    width: 220,
   },
 })
 

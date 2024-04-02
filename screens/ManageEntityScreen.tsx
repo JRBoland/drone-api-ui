@@ -46,7 +46,6 @@ const ManageEntityScreen: React.FC = () => {
   }
 
   const renderFormFields = () => {
-    
     if (!entityConfig || operation === '' || operation === 'delete') {
       return null
     }
@@ -87,7 +86,7 @@ const ManageEntityScreen: React.FC = () => {
         // renders rest of fields
         return (
           <View key={field.name} style={styles.fieldContainer}>
-            <Text style={{color: '#ff5e5b'}}>
+            <Text style={{ color: '#ff5e5b' }}>
               {field.placeholder}
               {isMandatory && operation === 'create' ? ' *' : ''}
             </Text>
@@ -238,7 +237,6 @@ const ManageEntityScreen: React.FC = () => {
     }
   }
 
-  
   if (!entityType) {
     return (
       <View style={styles.container}>
@@ -282,28 +280,23 @@ const ManageEntityScreen: React.FC = () => {
           </View>
         )}
 
-        <View style={styles.responseMessageContainer}>
-          {responseMessage && (
-            <Text style={styles.responseText}>{responseMessage}</Text>
-          )}
-        </View>
         {/*ID field*/}
         <View style={styles.inputContainer}>
           {['update', 'delete', 'find'].includes(operation) && (
             <View>
-              <Text style={{color: '#ff5e5b'}}>
+              <Text style={{ color: '#ff5e5b' }}>
                 {entityType.slice(0, -1)} ID *
               </Text>
-            <TextInput
-              placeholder={`${entityType.slice(0,-1)} ID`}
-              value={formData['id']?.toString() || ''}
-              onChangeText={(text) => handleInputChange('id', text)}
-              style={[
-                styles.input,
-                formData['id'] ? styles.input : styles.italicPlaceholder,
-              ]}
-              keyboardType="numeric"
-            />
+              <TextInput
+                placeholder={`${entityType.slice(0, -1)} ID`}
+                value={formData['id']?.toString() || ''}
+                onChangeText={(text) => handleInputChange('id', text)}
+                style={[
+                  styles.input,
+                  formData['id'] ? styles.input : styles.italicPlaceholder,
+                ]}
+                keyboardType="numeric"
+              />
             </View>
           )}
           {/*Other fields*/}
@@ -324,6 +317,13 @@ const ManageEntityScreen: React.FC = () => {
             </Text>
           </Pressable>
         )}
+
+        <View style={styles.responseMessageContainer}>
+          {responseMessage && (
+            <Text style={styles.responseText}>{responseMessage}</Text>
+          )}
+        </View>
+
         {/*Probably unneccssary? 
         <Pressable
             onPress={() => navigation.goBack()}
@@ -348,12 +348,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: "#fff"
+    backgroundColor: '#fff',
   },
   inputContainer: {
     flex: 1,
     alignItems: 'center',
-    
+
     margin: 10,
   },
   header: {
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 6,
     borderColor: '#000',
-    backgroundColor: "#FFFFEA",
+    backgroundColor: '#FFFFEA',
     padding: 10,
   },
   italicPlaceholder: {
@@ -380,14 +380,14 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 10,
     marginVertical: 6,
-    width: 180,
+    width: 220,
     backgroundColor: '#ffed66',
   },
   submitButton: {
     borderWidth: 2,
     borderRadius: 4,
     padding: 14,
-    margin: 40,
+    margin: 20,
     width: 'auto',
     minWidth: 180,
   },
@@ -409,12 +409,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     color: '#000',
     textAlign: 'left',
-   
   },
   responseMessageContainer: {
     borderRadius: 5,
     width: 'auto',
-    padding: 10
+    minWidth: 300,
+    padding: 10,
+    margin: 20,
   },
   instructionsText: {
     width: 200,

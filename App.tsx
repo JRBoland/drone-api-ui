@@ -1,4 +1,4 @@
-import 'react-native-gesture-handler';
+import 'react-native-gesture-handler'
 import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { NavigationContainer } from '@react-navigation/native'
@@ -19,15 +19,15 @@ const Stack = createStackNavigator()
 function MainStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Drones" component={DroneScreen} />
-      <Stack.Screen name="Pilots" component={PilotScreen} />
-      <Stack.Screen name="Flights" component={FlightScreen} />
       <Stack.Screen
         name="Login"
         component={LoginScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Drones" component={DroneScreen} />
+      <Stack.Screen name="Pilots" component={PilotScreen} />
+      <Stack.Screen name="Flights" component={FlightScreen} />
     </Stack.Navigator>
   )
 }
@@ -35,15 +35,16 @@ function MainStack() {
 function AuthStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Drones" component={DroneScreen} />
-      <Stack.Screen name="Pilots" component={PilotScreen} />
-      <Stack.Screen name="Flights" component={FlightScreen} />
       <Stack.Screen
         name="Login"
         component={LoginScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Drones" component={DroneScreen} />
+      <Stack.Screen name="Pilots" component={PilotScreen} />
+      <Stack.Screen name="Flights" component={FlightScreen} />
+
       <Stack.Screen name="Manage" component={ManageEntityScreen} />
     </Stack.Navigator>
   )
