@@ -26,7 +26,6 @@ const ManageEntityScreen: React.FC = () => {
     [key: string]: string | number | boolean
   }>({})
   const [responseMessage, setResponseMessage] = useState('')
-  const [booleanField, setBooleanField] = useState(false)
 
   const entityType = route.params?.entityType as string
   const entityConfig = entityType ? entityConfigurations[entityType] : null
@@ -46,11 +45,20 @@ const ManageEntityScreen: React.FC = () => {
   }
 
   const renderFormFields = () => {
+    
     if (!entityConfig || operation === '' || operation === 'delete') {
       return null
     }
 
     return entityConfig.fields.map((field) => {
+      const isMandatoryForCreate =
+        !('required' in field) || field.required !== false
+
+      const isMandatory =
+        (operation === 'create' && isMandatoryForCreate) ||
+        (operation === 'update' && field.name === 'id') ||
+        (operation === 'delete' && field.name === 'id')
+
       // renders checkbox if boolean
       if (field.type === 'boolean') {
         return (
@@ -64,6 +72,7 @@ const ManageEntityScreen: React.FC = () => {
               innerIconStyle={{
                 borderRadius: 4,
               }}
+              fillColor={'#00cecb'}
               onPress={(isChecked) => {
                 setFormData((prevFormData) => ({
                   ...prevFormData,
@@ -76,17 +85,23 @@ const ManageEntityScreen: React.FC = () => {
       } else {
         // renders rest of fields
         return (
-          <TextInput
-            key={field.name}
-            placeholder={field.placeholder}
-            value={formData[field.name]?.toString() || ''}
-            onChangeText={(text) => handleInputChange(field.name, text)}
-            style={[
-              styles.input,
-              formData[field.name] ? {} : styles.italicPlaceholder,
-            ]}
-            keyboardType={field.type === 'number' ? 'numeric' : 'default'}
-          />
+          <View key={field.name} style={styles.fieldContainer}>
+            <Text style={{color: '#ff5e5b'}}>
+              {field.placeholder}
+              {isMandatory && operation === 'create' ? ' *' : ''}
+            </Text>
+            <TextInput
+              key={field.name}
+              placeholder={field.placeholder}
+              value={formData[field.name]?.toString() || ''}
+              onChangeText={(text) => handleInputChange(field.name, text)}
+              style={[
+                styles.input,
+                formData[field.name] ? {} : styles.italicPlaceholder,
+              ]}
+              keyboardType={field.type === 'number' ? 'numeric' : 'default'}
+            />
+          </View>
         )
       }
     })
@@ -154,6 +169,7 @@ const ManageEntityScreen: React.FC = () => {
     return formattedResponse.trim() // Trim trailing whitespace
   }
 
+  // API REQUEST
   const apiRequest = async () => {
     const urlBase = `/${entityType.toLowerCase()}`
     try {
@@ -204,7 +220,6 @@ const ManageEntityScreen: React.FC = () => {
       }
 
       if (response && response.data) {
-        // Assuming the API always wraps responses in a 'data' field
         const responseData = response.data
         const formattedData = formatResponseData(
           responseData,
@@ -222,6 +237,7 @@ const ManageEntityScreen: React.FC = () => {
     }
   }
 
+  
   if (!entityType) {
     return (
       <View style={styles.container}>
@@ -232,6 +248,7 @@ const ManageEntityScreen: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      {/* Manage entity actions*/}
       <View style={styles.container}>
         <Text style={styles.header}>{`Manage ${entityType}`}</Text>
         <Text style={styles.instructionsText}>Click an action below:</Text>
@@ -250,7 +267,8 @@ const ManageEntityScreen: React.FC = () => {
             </Text>
           </Pressable>
         ))}
-        {/* Manage an entity:*/}
+
+        {/* Manage an entity fields*/}
         {operation && (
           <View>
             <Text style={styles.titleText}>
@@ -260,7 +278,6 @@ const ManageEntityScreen: React.FC = () => {
               Fill in the relevant fields below to {operation} a{' '}
               {entityType.slice(0, -1)}.
             </Text>
-          
           </View>
         )}
 
@@ -269,10 +286,15 @@ const ManageEntityScreen: React.FC = () => {
             <Text style={styles.responseText}>{responseMessage}</Text>
           )}
         </View>
+        {/*ID field*/}
         <View style={styles.inputContainer}>
           {['update', 'delete', 'find'].includes(operation) && (
+            <View>
+              <Text style={{color: '#ff5e5b'}}>
+                {entityType.slice(0, -1)} ID *
+              </Text>
             <TextInput
-              placeholder="ID"
+              placeholder={`${entityType.slice(0,-1)} ID`}
               value={formData['id']?.toString() || ''}
               onChangeText={(text) => handleInputChange('id', text)}
               style={[
@@ -281,16 +303,19 @@ const ManageEntityScreen: React.FC = () => {
               ]}
               keyboardType="numeric"
             />
+            </View>
           )}
-
+          {/*Other fields*/}
           {renderFormFields()}
         </View>
+
+        {/*Submit changes*/}
         {operation && (
           <Pressable
             onPress={apiRequest}
             style={({ pressed }) => [
               styles.submitButton,
-              { backgroundColor: pressed ? '#FFA07A' : 'orange' },
+              { backgroundColor: pressed ? '#ffed66' : '#00cecb' },
             ]}
           >
             <Text style={styles.submitText}>
@@ -309,6 +334,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: "#ffffea"
   },
   inputContainer: {
     flex: 1,
@@ -339,14 +365,14 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 6,
     width: 180,
-    backgroundColor: 'beige',
+    backgroundColor: '#ffed66',
   },
   submitButton: {
     borderWidth: 2,
     borderRadius: 4,
     padding: 14,
-    margin: 20,
-    width: 180,
+    margin: 40,
+    width: 'auto',
     backgroundColor: 'orange',
   },
   submitText: {
@@ -362,11 +388,12 @@ const styles = StyleSheet.create({
   },
   responseText: {
     padding: 10,
-    backgroundColor: 'beige',
+    backgroundColor: '#d8d8d8',
     borderRadius: 6,
     borderWidth: 2,
     color: '#000',
     textAlign: 'left',
+    width: 180,
   },
   responseMessageContainer: {
     borderRadius: 5,
@@ -377,17 +404,17 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   fieldContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     textAlign: 'left',
     marginVertical: 10,
     width: 220,
-    borderColor: '#000',
-    paddingVertical: 10,
+    borderColor: '#ff5e5b',
   },
   checkbox: {
     flexDirection: 'row-reverse',
-    gap: 20,
-    borderRadius: 4,
+    justifyContent: 'space-between',
+    marginVertical: 10,
+    borderColor: '#00cecb',
   },
   checkboxText: {
     color: '#000',
@@ -398,7 +425,7 @@ const styles = StyleSheet.create({
   icon: {
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: 'orange',
+    borderColor: '#00cecb',
   },
 })
 

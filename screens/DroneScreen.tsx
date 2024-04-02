@@ -81,8 +81,8 @@ const DroneScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 20,
-    backgroundColor: '#f0f0f0',
+    padding: 20,
+    backgroundColor: '#ffffea',
   },
   button: {
     borderWidth: 2,
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     width: 180,
-    backgroundColor: 'beige',
+    backgroundColor: '#ffed66',
   },
   buttonText: {
     color: 'black',
@@ -99,10 +99,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   text: {
-    margin: 10,
+    marginTop: 4,
+    marginHorizontal: 10,
     color: '#000',
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#d8d8d8',
     padding: 10,
+    borderRadius: 6,
   },
   manageContainer: {
     flexDirection: 'row',

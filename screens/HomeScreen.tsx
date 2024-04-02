@@ -61,7 +61,7 @@ const HomeScreen = ({ navigation }: any) => {
       </Pressable>
       </View>
       <Pressable
-        style={[styles.button, isAuthenticated ? { backgroundColor: 'orange'} : { backgroundColor: 'lightgreen'}, { marginTop: 24 }]}
+        style={[styles.button, isAuthenticated ? { backgroundColor: '#FF5E5B'} : { backgroundColor: '#00cecb'}, { marginTop: 24 }]}
         onPress={handleAuthAction}
       >
         <Text style={styles.buttonText}>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffea',
     paddingTop: 20,
   },
   button: {
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 6,
     width: 180,
-    backgroundColor: 'beige',
+    backgroundColor: '#ffed66',
   },
   buttonText: {
     color: 'black',
@@ -108,10 +108,10 @@ const styles = StyleSheet.create({
     marginVertical: 36
   },
   instructionsText: {
-    fontSize: 20,
     width: 180,
     marginTop: 12,
-    textAlign: 'left'
+    textAlign: 'left',
+    fontStyle: 'italic',
   }
 })
 
