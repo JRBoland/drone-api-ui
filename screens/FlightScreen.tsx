@@ -70,20 +70,21 @@ const FlightScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.tableRow}>
-            <Text style={styles.tableCell}>{item.id}</Text>
-            <Text style={styles.tableCell}>{item.pilot_id}</Text>
-            <Text style={styles.tableCell}>{item.drone_id}</Text>
-            <Text style={styles.tableCell}>{item.flight_location}</Text>
-            <Text style={styles.tableCell}>{item.footage_recorded}</Text>
+            <Text style={[styles.tableCell, styles.idCell]}>{item.id}</Text>
+            <Text style={[styles.tableCell, styles.idCell]}>{item.pilot_id}</Text>
+            <Text style={[styles.tableCell, styles.idCell]}>{item.drone_id}</Text>
+            <Text style={[styles.tableCell, styles.locationCell]}>{item.flight_location}</Text>
+            {/* renders text based on boolean value */}
+            <Text style={[styles.tableCell, styles.footageRecordedCell]}>{item.footage_recorded ? 'Yes' : 'No'}</Text>
           </View>
         )}
         ListHeaderComponent={() => (
           <View style={styles.tableHeader}>
-            <Text style={styles.headerText}>ID</Text>
-            <Text style={styles.headerText}>Pilot ID</Text>
-            <Text style={styles.headerText}>Drone ID</Text>
-            <Text style={styles.headerText}>Flight Location</Text>
-            <Text style={styles.headerText}>Footage Recorded</Text>
+            <Text style={[styles.headerText, styles.idCell]}>ID</Text>
+            <Text style={[styles.headerText, styles.idCell]}>Pilot ID</Text>
+            <Text style={[styles.headerText, styles.idCell]}>Drone ID</Text>
+            <Text style={[styles.headerText, styles.locationCell]}>Flight Location</Text>
+            <Text style={[styles.headerText, styles.footageRecordedCell]}>Footage Recorded</Text>
           </View>
         )}
       />
@@ -95,14 +96,16 @@ const FlightScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 5,
     backgroundColor: '#FFF',
   },
   button: {
     borderWidth: 2,
     borderRadius: 4,
     padding: 10,
-    margin: 20,
+    marginLeft: 5,
+    marginRight: 20,
+    marginVertical: 20,
     width: 180,
     backgroundColor: '#ffed66',
   },
@@ -158,7 +161,16 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   table: {
-    margin: 20,
+    margin: 5,
+  },
+  idCell: {
+    flex: 1,
+  },
+  locationCell: {
+    flex: 3,
+  },
+  footageRecordedCell: {
+    flex: 1.5,
   }
 })
 

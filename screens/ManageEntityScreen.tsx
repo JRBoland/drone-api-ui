@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: "#FFFAF0"
+    backgroundColor: "#fff"
   },
   inputContainer: {
     flex: 1,
@@ -404,15 +404,17 @@ const styles = StyleSheet.create({
   },
   responseText: {
     padding: 10,
-    backgroundColor: '#d8d8d8',
+    backgroundColor: '#FFFAF0',
     borderRadius: 6,
     borderWidth: 2,
     color: '#000',
     textAlign: 'left',
-    width: 180,
+   
   },
   responseMessageContainer: {
     borderRadius: 5,
+    width: 'auto',
+    padding: 10
   },
   instructionsText: {
     width: 200,

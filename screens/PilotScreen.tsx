@@ -74,16 +74,16 @@ const PilotScreen = () => {
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View style={styles.tableRow}>
-              <Text style={styles.tableCell}>{item.id}</Text>
-              <Text style={styles.tableCell}>{item.name}</Text>
-              <Text style={styles.tableCell}>{item.age}</Text>
+              <Text style={[styles.tableCell, styles.idCell]}>{item.id}</Text>
+              <Text style={[styles.tableCell, styles.nameCell]}>{item.name}</Text>
+              <Text style={[styles.tableCell, styles.ageCell]}>{item.age}</Text>
             </View>
           )}
           ListHeaderComponent={() => (
             <View style={styles.tableHeader}>
-              <Text style={styles.headerText}>ID</Text>
-              <Text style={styles.headerText}>Name</Text>
-              <Text style={styles.headerText}>Age</Text>
+              <Text style={[styles.headerText, styles.idCell]}>ID</Text>
+              <Text style={[styles.headerText, styles.nameCell]}>Name</Text>
+              <Text style={[styles.headerText, styles.ageCell]}>Age</Text>
             </View>
           )}
         />
@@ -95,14 +95,16 @@ const PilotScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 5,
     backgroundColor: '#FFF',
   },
   button: {
     borderWidth: 2,
     borderRadius: 4,
     padding: 10,
-    margin: 20,
+    marginLeft: 5,
+    marginRight: 20,
+    marginVertical: 20,
     width: 180,
     backgroundColor: '#ffed66',
   },
@@ -158,8 +160,17 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   table: {
-    margin: 20,
+    margin: 5,
   },
+  idCell: {
+    flex: 1,
+  },
+  nameCell: {
+    flex: 4,
+  },
+  ageCell: {
+    flex: 1.5
+  }
 })
 
 export default PilotScreen
