@@ -8,7 +8,7 @@ import {
 import api from '../services/apiService'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { RefreshControl, ScrollView } from 'react-native-gesture-handler'
-import BouncyCheckbox from 'react-native-bouncy-checkbox'
+import { renderFormFields } from '../components/renderFormFields'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 const ManageEntityScreen: React.FC = () => {
@@ -37,68 +37,6 @@ const ManageEntityScreen: React.FC = () => {
     }
 
     setFormData((prev) => ({ ...prev, [field]: formattedValue }))
-  }
-
-  const renderFormFields = () => {
-    if (!entityConfig || operation === '' || operation === 'delete') {
-      return null
-    }
-
-    return entityConfig.fields.map((field) => {
-      const isMandatoryForCreate =
-        !('required' in field) || field.required !== false
-
-      const isMandatory =
-        (operation === 'create' && isMandatoryForCreate) ||
-        (operation === 'update' && field.name === 'id') ||
-        (operation === 'delete' && field.name === 'id')
-
-      // renders checkbox if boolean
-      if (field.type === 'boolean') {
-        return (
-          <View key={field.name} style={styles.fieldContainer}>
-            <BouncyCheckbox
-              isChecked={formData[field.name] === true}
-              text={field.placeholder}
-              textStyle={styles.checkboxText}
-              style={styles.checkbox}
-              iconStyle={styles.icon}
-              innerIconStyle={{
-                borderRadius: 4,
-              }}
-              fillColor={'#00cecb'}
-              onPress={(isChecked) => {
-                setFormData((prevFormData) => ({
-                  ...prevFormData,
-                  [field.name]: isChecked,
-                }))
-              }}
-            />
-          </View>
-        )
-      } else {
-        // renders rest of fields
-        return (
-          <View key={field.name} style={styles.fieldContainer}>
-            <Text style={{ color: '#ff5e5b' }}>
-              {field.placeholder}
-              {isMandatory && operation === 'create' ? ' *' : ''}
-            </Text>
-            <TextInput
-              key={field.name}
-              placeholder={field.placeholder}
-              value={formData[field.name]?.toString() || ''}
-              onChangeText={(text) => handleInputChange(field.name, text)}
-              style={[
-                styles.input,
-                formData[field.name] ? {} : styles.italicPlaceholder,
-              ]}
-              keyboardType={field.type === 'number' ? 'numeric' : 'default'}
-            />
-          </View>
-        )
-      }
-    })
   }
 
   const formatResponseData = (
@@ -247,9 +185,10 @@ const ManageEntityScreen: React.FC = () => {
   }, [])
 
   return (
-    <SafeAreaView style={styles.container}>
-      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <SafeAreaView style={styles.container}>
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+
         {/* Manage entity actions*/}
         <Text style={styles.header}>{`Manage ${entityType}`}</Text>
         <Text style={styles.instructionsText}>Click an action below:</Text>
@@ -258,6 +197,7 @@ const ManageEntityScreen: React.FC = () => {
             key={operation}
             onPress={() => {
               setOperation(operation)
+              setFormData({})
               setResponseMessage('')
             }}
             style={styles.button}
@@ -302,7 +242,14 @@ const ManageEntityScreen: React.FC = () => {
             </View>
           )}
           {/*Other fields*/}
-          {renderFormFields()}
+          {renderFormFields({
+            entityConfig,
+            operation,
+            formData,
+            setFormData,
+            styles,
+            handleInputChange,
+          })}
         </View>
 
         {/*Submit changes*/}
@@ -325,8 +272,8 @@ const ManageEntityScreen: React.FC = () => {
             <Text style={styles.responseText}>{responseMessage}</Text>
           )}
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ScrollView>
   )
 }
 
@@ -335,9 +282,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
     backgroundColor: '#fff',
   },
+
   inputContainer: {
     flex: 1,
     alignItems: 'center',
@@ -347,7 +294,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 22,
     fontWeight: 'bold',
-    margin: 20,
+    marginBottom: 20,
   },
   input: {
     width: 220,

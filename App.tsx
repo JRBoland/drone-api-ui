@@ -25,7 +25,11 @@ function MainStack() {
         component={LoginScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="Entity" component={EntityScreen} />
     </Stack.Navigator>
   )
@@ -39,9 +43,13 @@ function AuthStack() {
         component={LoginScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="Entity" component={EntityScreen} />
-      <Stack.Screen name="Manage" component={ManageEntityScreen}/>
+      <Stack.Screen name="Manage" component={ManageEntityScreen} />
     </Stack.Navigator>
   )
 }

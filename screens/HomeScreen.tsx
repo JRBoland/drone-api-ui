@@ -47,33 +47,48 @@ const HomeScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.welcomeText}>Hello {username} 👋 </Text>
-      <Text style={styles.instructionsText}>Select an option: </Text>
+      <Text style={styles.welcomeText}>
+        Logged in as:{'\n'}
+        {'\n'}
+        {username} 👋{' '}
+      </Text>
+
       <View style={styles.buttonsContainer}>
-        <Pressable style={styles.button} onPress={() => handleNavigatetoEntity('Drones')}>
+        <Text style={styles.instructionsText}>Select an option: </Text>
+        <Pressable
+          style={styles.button}
+          onPress={() => handleNavigatetoEntity('Drones')}
+        >
           <Text style={styles.buttonText}>Drones</Text>
         </Pressable>
-        <Pressable style={styles.button} onPress={() => handleNavigatetoEntity('Pilots')}>
+        <Pressable
+          style={styles.button}
+          onPress={() => handleNavigatetoEntity('Pilots')}
+        >
           <Text style={styles.buttonText}>Pilots</Text>
         </Pressable>
-        <Pressable style={styles.button} onPress={() => handleNavigatetoEntity('Flights')}>
+        <Pressable
+          style={styles.button}
+          onPress={() => handleNavigatetoEntity('Flights')}
+        >
           <Text style={styles.buttonText}>Flights</Text>
         </Pressable>
+
+        <Pressable
+          style={[
+            styles.button,
+            isAuthenticated
+              ? { backgroundColor: '#FF5E5B' }
+              : { backgroundColor: '#00cecb' },
+            { marginTop: 80 },
+          ]}
+          onPress={handleAuthAction}
+        >
+          <Text style={styles.buttonText}>
+            {isAuthenticated ? 'Logout' : 'Login'}
+          </Text>
+        </Pressable>
       </View>
-      <Pressable
-        style={[
-          styles.button,
-          isAuthenticated
-            ? { backgroundColor: '#FF5E5B' }
-            : { backgroundColor: '#00cecb' },
-          { marginTop: 24 },
-        ]}
-        onPress={handleAuthAction}
-      >
-        <Text style={styles.buttonText}>
-          {isAuthenticated ? 'Logout' : 'Login'}
-        </Text>
-      </Pressable>
     </SafeAreaView>
   )
 }
@@ -90,7 +105,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     padding: 10,
-    marginVertical: 6,
+    marginVertical: 8,
     width: 180,
     backgroundColor: '#ffed66',
   },
@@ -101,21 +116,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   welcomeText: {
-    textTransform: 'capitalize',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     width: 180,
-    margin: 24,
-    padding: 2,
+    marginTop: 140,
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
   },
   buttonsContainer: {
-    marginVertical: 36,
+    height: 'auto',
+    marginVertical: 100,
   },
   instructionsText: {
     width: 180,
-    marginTop: 12,
+    marginVertical: 12,
     textAlign: 'left',
     fontStyle: 'italic',
   },

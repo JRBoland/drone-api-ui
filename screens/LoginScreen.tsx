@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   View,
   TextInput,
@@ -24,7 +24,18 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
-  const { login } = useAuth()
+  const { login, isAuthenticated } = useAuth()
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const token = await AsyncStorage.getItem('userToken')
+      // If `isAuthenticated` is available and true, or if a token exists, navigate to Home
+      if (isAuthenticated || token) {
+        navigation.navigate('Home')
+      }
+    }
+    checkAuthentication()
+  }, [navigation, isAuthenticated])
 
   const handleLogin = async () => {
     console.log('attempting login with ', username, password)
@@ -72,7 +83,10 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
           </Pressable>
         </View>
         <View style={styles.buttonContainer}>
-          <Pressable style={[styles.button, {backgroundColor: '#00CECB'}]} onPress={() => navigation.navigate('Home')}>
+          <Pressable
+            style={[styles.button, { backgroundColor: '#00CECB' }]}
+            onPress={() => navigation.navigate('Home')}
+          >
             <Text style={styles.buttonText}>Continue as Guest</Text>
           </Pressable>
         </View>
@@ -132,7 +146,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: 'center',
-    
   },
 })
 

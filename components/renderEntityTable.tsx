@@ -81,32 +81,28 @@ export const renderEntityHeader = (entityType: string) => {
 const styles = StyleSheet.create({
   tableRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     borderBottomWidth: 2,
     borderLeftWidth: 2,
     borderColor: '#d8d8d8',
   },
   tableCell: {
-    flex: 1,
     textAlign: 'left',
-    padding: 10,
+    padding: 2,
+    paddingVertical: 8,
     borderRightWidth: 2,
     borderColor: '#d8d8d8',
   },
   tableHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     borderBottomWidth: 2,
     borderBottomColor: '#00cecb',
-    paddingVertical: 10,
+    paddingVertical: 8,
     backgroundColor: '#ffed66',
-    textDecorationLine: 'underline',
   },
   headerText: {
-    flex: 1,
     textAlign: 'left',
     fontWeight: 'bold',
-    paddingLeft: 10,
+    padding: 2,
   },
   table: {
     margin: 5,

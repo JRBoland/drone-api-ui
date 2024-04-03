@@ -72,11 +72,11 @@ const EntityScreen: React.FC = () => {
     } else {
       console.log('not authenticated')
       Alert.alert(
-        `Authentication required to manage ${entityType}`,
-        'Please log in',
+        'Authentication required',
+        `Please log in to manage ${entityType}`,
         [
-          { text: 'OK', onPress: () => navigation.navigate('Login') },
-          { text: 'Back', onPress: () => navigation.goBack() },
+          { text: 'Login', onPress: () => navigation.navigate('Login') },
+          { text: 'Cancel', style: 'cancel' },
         ]
       )
     }
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginLeft: 5,
     marginRight: 20,
-    marginVertical: 20,
+    marginBottom: 20,
     width: 180,
     backgroundColor: '#ffed66',
   },
