@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useAuth } from '../utils/authContext'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const HomeScreen = ({ navigation }: any) => {
   const [username, setUsername] = useState('Guest')
@@ -45,7 +46,7 @@ const HomeScreen = ({ navigation }: any) => {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.welcomeText}>Hello {username} 👋 </Text>
       <Text style={styles.instructionsText}>Select an option: </Text>
       <View style={styles.buttonsContainer}>
@@ -73,7 +74,7 @@ const HomeScreen = ({ navigation }: any) => {
           {isAuthenticated ? 'Logout' : 'Login'}
         </Text>
       </Pressable>
-    </View>
+    </SafeAreaView>
   )
 }
 

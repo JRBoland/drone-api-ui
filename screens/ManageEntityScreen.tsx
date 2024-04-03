@@ -1,11 +1,5 @@
 import React, { useState } from 'react'
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Pressable,
-} from 'react-native'
+import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native'
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native'
 import {
   entityConfigurations,
@@ -13,8 +7,9 @@ import {
 } from '../config/entityConfigurations'
 import api from '../services/apiService'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { ScrollView } from 'react-native-gesture-handler'
+import { RefreshControl, ScrollView } from 'react-native-gesture-handler'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const ManageEntityScreen: React.FC = () => {
   const route =
@@ -28,6 +23,7 @@ const ManageEntityScreen: React.FC = () => {
   const entityType = route.params?.entityType as string
   const entityConfig = entityType ? entityConfigurations[entityType] : null
   const navigation = useNavigation()
+  const [refreshing, setRefreshing] = React.useState(false)
 
   const handleInputChange = (field: string, value: string) => {
     let formattedValue: string | number | boolean = value
@@ -243,10 +239,18 @@ const ManageEntityScreen: React.FC = () => {
     )
   }
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true)
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 2000)
+  }, [])
+
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      {/* Manage entity actions*/}
-      <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        {/* Manage entity actions*/}
         <Text style={styles.header}>{`Manage ${entityType}`}</Text>
         <Text style={styles.instructionsText}>Click an action below:</Text>
         {['create', 'update', 'delete', 'find'].map((operation) => (
@@ -321,9 +325,8 @@ const ManageEntityScreen: React.FC = () => {
             <Text style={styles.responseText}>{responseMessage}</Text>
           )}
         </View>
-
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   )
 }
 

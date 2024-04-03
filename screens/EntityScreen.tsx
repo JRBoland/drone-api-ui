@@ -7,16 +7,23 @@ import {
   Pressable,
   Alert,
   Platform,
+  RefreshControl,
 } from 'react-native'
-import { useNavigation, NavigationProp, useRoute } from '@react-navigation/native'
+import {
+  useNavigation,
+  NavigationProp,
+  useRoute,
+} from '@react-navigation/native'
 import { useAuth } from '../utils/authContext'
 import { fetchEntityData } from '../services/entityService'
-import { Entity, EntityApiResponse } from '../interfaces/entity' 
+import { Entity, EntityApiResponse } from '../interfaces/entity'
 import { useFocusEffect } from '@react-navigation/native'
+import { entityConfigurations } from '../config/entityConfigurations'
 import {
-  entityConfigurations,
-} from '../config/entityConfigurations'
-import { renderEntityHeader, renderEntityItem } from '../components/renderEntityTable'
+  renderEntityHeader,
+  renderEntityItem,
+} from '../components/renderEntityTable'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const EntityScreen: React.FC = () => {
   const route = useRoute()
@@ -25,8 +32,14 @@ const EntityScreen: React.FC = () => {
   const config = entityConfigurations[entityType]
   const { isAuthenticated } = useAuth()
   const navigation = useNavigation<NavigationProp<any>>()
+  const [refreshing, setRefreshing] = React.useState(false)
 
-  
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true)
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 2000)
+  }, [])
 
   useFocusEffect(
     useCallback(() => {
@@ -36,7 +49,7 @@ const EntityScreen: React.FC = () => {
             entityType
           )
           // sorts by ID
-          const sortedEntities = response.data.sort((a, b) => a.id - b.id) 
+          const sortedEntities = response.data.sort((a, b) => a.id - b.id)
           setEntities(sortedEntities)
         } catch (error) {
           console.error(`Error fetching ${entityType.toLowerCase()}:`, error)
@@ -59,31 +72,36 @@ const EntityScreen: React.FC = () => {
     } else {
       console.log('not authenticated')
       Alert.alert(
-        `Authentication required to manage ${entityType}`, 'Please log in',
-        [{ text: 'OK', onPress: () => navigation.navigate('Login') }, { text: 'Back', onPress: () => navigation.goBack()}],
+        `Authentication required to manage ${entityType}`,
+        'Please log in',
+        [
+          { text: 'OK', onPress: () => navigation.navigate('Login') },
+          { text: 'Back', onPress: () => navigation.goBack() },
+        ]
       )
     }
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.manageContainer}>
-        <Pressable style={styles.button} onPress={handleManageEntities}>
-          <Text style={styles.buttonText}>{`𝌶 Manage ${entityType}`}</Text>
-        </Pressable>
-      </View>
-      <View style={styles.table}>
-        <FlatList
-          data={entities}
-          ListEmptyComponent={
-            <Text style={styles.text}>{`No ${entityType} found`}</Text>
-          }
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => renderEntityItem(entityType, item)}
-          ListHeaderComponent={() => renderEntityHeader(entityType)}
-        />
-      </View>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <View style={styles.manageContainer}>
+          <Pressable style={styles.button} onPress={handleManageEntities}>
+            <Text style={styles.buttonText}>{`𝌶 Manage ${entityType}`}</Text>
+          </Pressable>
+        </View>
+        <View style={styles.table}>
+          <FlatList
+            data={entities}
+            ListEmptyComponent={
+              <Text style={styles.text}>{`No ${entityType} found`}</Text>
+            }
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => renderEntityItem(entityType, item)}
+            ListHeaderComponent={() => renderEntityHeader(entityType)}
+          />
+        </View>
+    </SafeAreaView>
   )
 }
 
@@ -127,7 +145,7 @@ const styles = StyleSheet.create({
   },
   table: {
     margin: 5,
-  }
+  },
 })
 
 export default EntityScreen
