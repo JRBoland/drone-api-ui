@@ -5,8 +5,6 @@ import {
   TextInput,
   StyleSheet,
   Pressable,
-  Platform,
-  KeyboardAvoidingView,
 } from 'react-native'
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native'
 import {
@@ -324,19 +322,6 @@ const ManageEntityScreen: React.FC = () => {
           )}
         </View>
 
-        {/*Probably unneccssary? 
-        <Pressable
-            onPress={() => navigation.goBack()}
-            style={({ pressed }) => [
-              styles.submitButton,
-              { backgroundColor: pressed ? '#d8d8d8' : '#00cecb' },
-            ]}
-          >
-            <Text style={styles.submitText}>
-              Back to {entityType}
-            </Text>
-          </Pressable>
-          */}
       </View>
     </ScrollView>
   )
@@ -364,7 +349,7 @@ const styles = StyleSheet.create({
   input: {
     width: 220,
     marginVertical: 10,
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 6,
     borderColor: '#000',
     backgroundColor: '#FFFFEA',
@@ -376,7 +361,7 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   button: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 4,
     padding: 10,
     marginVertical: 6,

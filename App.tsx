@@ -46,40 +46,6 @@ function AuthStack() {
   )
 }
 
-//function MainStack() {
-//  return (
-//    <Stack.Navigator>
-//      <Stack.Screen
-//        name="Login"
-//        component={LoginScreen}
-//        options={{ headerShown: false }}
-//      />
-//      <Stack.Screen name="Home" component={HomeScreen} />
-//      <Stack.Screen name="Drones" component={DroneScreen} />
-//      <Stack.Screen name="Pilots" component={PilotScreen} />
-//      <Stack.Screen name="Flights" component={FlightScreen} />
-//    </Stack.Navigator>
-//  )
-//}
-//
-//function AuthStack() {
-//  return (
-//    <Stack.Navigator>
-//      <Stack.Screen
-//        name="Login"
-//        component={LoginScreen}
-//        options={{ headerShown: false }}
-//      />
-//      <Stack.Screen name="Home" component={HomeScreen} />
-//      <Stack.Screen name="Drones" component={DroneScreen} />
-//      <Stack.Screen name="Pilots" component={PilotScreen} />
-//      <Stack.Screen name="Flights" component={FlightScreen} />
-//
-//      <Stack.Screen name="Manage" component={ManageEntityScreen} />
-//    </Stack.Navigator>
-//  )
-//}
-//
 function AppNavigator() {
   const { isAuthenticated } = useAuth()
 

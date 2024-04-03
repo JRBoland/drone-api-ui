@@ -40,18 +40,6 @@ const HomeScreen = ({ navigation }: any) => {
     }
   }
 
-  //const handleGetDrones = () => {
-  //  navigation.navigate('Drones') // Navigate to DronesScreen
-  //}
-  //
-  //const handleGetPilots = () => {
-  //  navigation.navigate('Pilots') // Navigate to PilotScreen
-  //}
-  //
-  //const handleGetFlights = () => {
-  //  navigation.navigate('Flights') // navigate to FlightScreen
-  //}
-
   const handleNavigatetoEntity = (entityType: string) => {
     navigation.navigate('Entity', { entityType })
   }
@@ -98,7 +86,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   button: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 4,
     padding: 10,
     marginVertical: 6,
