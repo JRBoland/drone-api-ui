@@ -68,11 +68,11 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         </View>
         <View style={styles.buttonContainer}>
           <Pressable style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Submit</Text>
+            <Text style={styles.buttonText}>Login</Text>
           </Pressable>
         </View>
         <View style={styles.buttonContainer}>
-          <Pressable style={styles.button} onPress={() => navigation.navigate('Home')}>
+          <Pressable style={[styles.button, {backgroundColor: '#00CECB'}]} onPress={() => navigation.navigate('Home')}>
             <Text style={styles.buttonText}>Continue as Guest</Text>
           </Pressable>
         </View>
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 10,
     marginVertical: 8,
-    width: 120,
+    width: 220,
     backgroundColor: '#FFED66',
   },
   buttonText: {
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: 'center',
-    width: 220,
+    
   },
 })
 
