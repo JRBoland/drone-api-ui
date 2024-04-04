@@ -240,7 +240,7 @@ const ManageEntityScreen: React.FC = () => {
 
         {/* Manage entity actions*/}
         <Text style={styles.header}>{`Manage ${entityType}`}</Text>
-        <Text style={styles.instructionsText}>Click an action below:</Text>
+        <Text style={styles.instructionsText}>Select an action below:</Text>
         {['create', 'update', 'delete', 'find'].map((operation) => (
           <Pressable
             key={operation}
@@ -251,7 +251,7 @@ const ManageEntityScreen: React.FC = () => {
             }}
             style={styles.button}
           >
-            <Text>
+            <Text style={styles.operationText}>
               {operation.charAt(0).toUpperCase() + operation.slice(1)} a{' '}
               {entityType.slice(0, -1)}
             </Text>
@@ -266,7 +266,7 @@ const ManageEntityScreen: React.FC = () => {
             </Text>
             <Text style={styles.instructionsText}>
               Fill in the relevant fields below to {operation} a{' '}
-              {entityType.slice(0, -1)}.
+              {entityType.slice(0, -1).toLowerCase()}.
             </Text>
           </View>
         )}
@@ -362,10 +362,16 @@ const styles = StyleSheet.create({
   button: {
     borderWidth: 1,
     borderRadius: 4,
-    padding: 10,
+    padding: 15,
+    
     marginVertical: 6,
-    width: 220,
+    width: 180,
     backgroundColor: '#ffed66',
+  },
+  operationText: {
+    textTransform: 'uppercase',
+    textAlign: 'center',
+    fontWeight: 'bold'
   },
   submitButton: {
     borderWidth: 2,
