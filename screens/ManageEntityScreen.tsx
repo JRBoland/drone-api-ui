@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native'
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native'
 import {
@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { RefreshControl, ScrollView } from 'react-native-gesture-handler'
 import { renderFormFields } from '../components/renderFormFields'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import axios, { AxiosError } from 'axios'
 
 const ManageEntityScreen: React.FC = () => {
   const route =
@@ -24,6 +25,18 @@ const ManageEntityScreen: React.FC = () => {
   const entityConfig = entityType ? entityConfigurations[entityType] : null
   const navigation = useNavigation()
   const [refreshing, setRefreshing] = React.useState(false)
+  const [userRole, setUserRole] = useState('')
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const role = await AsyncStorage.getItem('userRole')
+      if (role) {
+        setUserRole(role)
+      }
+    }
+
+    fetchUserRole()
+  }, [])
 
   const handleInputChange = (field: string, value: string) => {
     let formattedValue: string | number | boolean = value
@@ -101,6 +114,31 @@ const ManageEntityScreen: React.FC = () => {
     return formattedResponse.trim() // Trim trailing whitespace
   }
 
+  const errorStatusMessage = (error: AxiosError) => {
+    if (error.response && error.response.status) {
+      const { status } = error.response
+
+      switch (status) {
+        case 400: // bad request
+          return `Your request could not be completed. \nPlease check the required fields and try again.`
+        case 400: // unauthorised
+          return 'You must be authenticated to complete this action. \nPlease log in and try again.'
+        case 403: // forbidden (unauthorised)
+          return 'You do not have permission to perform this action.'
+        case 404:
+          return 'Resource was not found, please check and try again.'
+        case 408:
+          return 'Request timed out. Please try again'
+        case 500:
+          return 'An internal server error occurred.'
+        default:
+          return `An error occurred: ${error.response}`
+      }
+    } else {
+      return `An unknown error occurred: ${error}`
+    }
+  }
+
   // API REQUEST
   const apiRequest = async () => {
     const urlBase = `/${entityType.toLowerCase()}`
@@ -118,7 +156,7 @@ const ManageEntityScreen: React.FC = () => {
         },
       }
 
-      // Only include non-empty fields in the search request
+      // Reducer funct to only include non-empty fields in the search request
       const nonEmptyFields = Object.entries(formData).reduce(
         (acc, [key, value]) => {
           if (value) acc[key] = value // Only add non-empty values
@@ -165,7 +203,14 @@ const ManageEntityScreen: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Request failed:', error)
-      setResponseMessage(`Error: ${error.message}`)
+      if (axios.isAxiosError(error)) {
+        const errorMessage = errorStatusMessage(error)
+        setResponseMessage(`Error: ${errorMessage}`)
+      } else {
+        setResponseMessage(
+          'An unexpected error occurred. Please try again later. (Not Axios)'
+        )
+      }
     }
   }
 
@@ -283,12 +328,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
+    paddingTop: 20,
   },
 
   inputContainer: {
     flex: 1,
     alignItems: 'center',
-
     margin: 10,
   },
   header: {
