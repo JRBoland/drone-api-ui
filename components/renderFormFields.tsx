@@ -13,7 +13,7 @@ export interface RenderFormFieldsProps {
   setFormData: React.Dispatch<
     React.SetStateAction<{ [key: string]: string | number | boolean }>
   >
-  styles: { [key: string]: any } // You can define a more precise type for your styles
+  styles: { [key: string]: any } 
   handleInputChange: (field: string, value: string) => void
 }
 

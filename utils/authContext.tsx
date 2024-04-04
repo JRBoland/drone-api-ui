@@ -8,7 +8,7 @@ const AuthContext = createContext({
 });
 
 type AuthProviderProps = {
-  children: ReactNode; // This type accepts any valid React child (elements, strings, numbers, fragments, etc.)
+  children: ReactNode; 
 };
 
 export const useAuth = () => useContext(AuthContext);
@@ -32,7 +32,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = () => {
     setIsAuthenticated(true);
-    // Ideally should also set the token in AsyncStorage here
   };
 
   const logout = () => {

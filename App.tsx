@@ -1,15 +1,10 @@
 import 'react-native-gesture-handler'
 import React, { useEffect, useState } from 'react'
-//import { StatusBar } from 'expo-status-bar'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
+//import AsyncStorage from '@react-native-async-storage/async-storage'
 import HomeScreen from './screens/HomeScreen'
-//import DroneScreen from './screens/DroneScreen'
-//import PilotScreen from './screens/PilotScreen'
 import LoginScreen from './screens/LoginScreen'
-//import FlightScreen from './screens/FlightScreen'
 import ManageEntityScreen from './screens/ManageEntityScreen'
 
 import { AuthProvider, useAuth } from './utils/authContext'
