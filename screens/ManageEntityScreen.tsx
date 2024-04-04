@@ -52,6 +52,7 @@ const ManageEntityScreen: React.FC = () => {
     setFormData((prev) => ({ ...prev, [field]: formattedValue }))
   }
 
+  // todo: array responses to start at 1
   const formatResponseData = (
     responseData: any,
     operation: string,
@@ -65,26 +66,29 @@ const ManageEntityScreen: React.FC = () => {
     let formattedResponse = title + '\n\n'
 
     // Different message for delete operation
-    if (operation === 'delete' && responseData.id) {
+    if (operation === 'delete') {
       return `${
         entityType.charAt(0).toUpperCase() + entityType.slice(1, -1)
-      } #${responseData.id} deleted.`
+      } deleted.`
+      
     }
 
     // A recursive function to format nested objects correctly
-    const formatObject = (obj: any): string => {
+    const formatObject = (obj: {}): string => {
       return Object.entries(obj)
         .map(([key, value]) => {
           // Skip the 'message' field for direct formatting
           if (key === 'message') return ''
-          // Capitalize the first letter of each key
-          let formattedKey = key.charAt(0).toUpperCase() + key.slice(1)
+          // Capitalise the first letter of each key and replace underscores with spaces
+          let formattedKey =
+            key.replace(/_/g, ' ').charAt(0).toUpperCase() +
+            key.replace(/_/g, ' ').slice(1)
           // If the value is an object, recursively format it
           if (typeof value === 'object' && value !== null) {
             return `${formattedKey}:\n${formatObject(value).replace(
               /^/gm,
               '  '
-            )}`
+            )}\n`
           } else {
             return `${formattedKey}: ${value}`
           }
