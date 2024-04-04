@@ -15,6 +15,7 @@ const HomeScreen = ({ navigation }: any) => {
   const [username, setUsername] = useState('Guest')
   const { isAuthenticated, logout } = useAuth()
 
+  // grabs username to display. todo: check token is still valid at this point?
   useEffect(() => {
     const getUsername = async () => {
       const storedUsername = await AsyncStorage.getItem('username')

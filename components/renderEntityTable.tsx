@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text } from "react-native"
 
-
+// renders different cell titles and sizes based on fields
 export const renderEntityItem = (entityType: string, item: any) => {
   switch (entityType) {
     case 'Drones':

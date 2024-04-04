@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import axios, { AxiosError } from 'axios'
 
 const ManageEntityScreen: React.FC = () => {
+  //hooks
   const route =
     useRoute<RouteProp<{ params: ManageEntityScreenParams }, 'params'>>()
   const [operation, setOperation] = useState('')
@@ -21,23 +22,14 @@ const ManageEntityScreen: React.FC = () => {
   }>({})
   const [responseMessage, setResponseMessage] = useState('')
 
+  // grabbing entitytype 
   const entityType = route.params?.entityType as string
   const entityConfig = entityType ? entityConfigurations[entityType] : null
-  const navigation = useNavigation()
   const [refreshing, setRefreshing] = React.useState(false)
-  const [userRole, setUserRole] = useState('')
 
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      const role = await AsyncStorage.getItem('userRole')
-      if (role) {
-        setUserRole(role)
-      }
-    }
+  // todo: implement userrole for disabling certain buttons based on whether role is admin||user
 
-    fetchUserRole()
-  }, [])
-
+  // handle form input data type
   const handleInputChange = (field: string, value: string) => {
     let formattedValue: string | number | boolean = value
 
@@ -48,11 +40,12 @@ const ManageEntityScreen: React.FC = () => {
     } else if (field === 'age' && !isNaN(parseInt(value))) {
       formattedValue = parseInt(value)
     }
-
+    // update form data state
     setFormData((prev) => ({ ...prev, [field]: formattedValue }))
   }
 
   // todo: array responses to start at 1
+  // response data after creating an entity
   const formatResponseData = (
     responseData: any,
     operation: string,
@@ -73,7 +66,7 @@ const ManageEntityScreen: React.FC = () => {
       
     }
 
-    // A recursive function to format nested objects correctly
+    // A recursive function to format nested objects correctly for readability
     const formatObject = (obj: {}): string => {
       return Object.entries(obj)
         .map(([key, value]) => {
@@ -83,7 +76,7 @@ const ManageEntityScreen: React.FC = () => {
           let formattedKey =
             key.replace(/_/g, ' ').charAt(0).toUpperCase() +
             key.replace(/_/g, ' ').slice(1)
-          // If the value is an object, recursively format it
+          // If the value is an object, recursively format it, indenting object for readability
           if (typeof value === 'object' && value !== null) {
             return `${formattedKey}:\n${formatObject(value).replace(
               /^/gm,
@@ -192,7 +185,8 @@ const ManageEntityScreen: React.FC = () => {
           console.log('No operation default switch state triggered')
           return
       }
-
+      
+      // api response
       if (response && response.data) {
         const responseData = response.data
         const formattedData = formatResponseData(
@@ -218,6 +212,7 @@ const ManageEntityScreen: React.FC = () => {
     }
   }
 
+  // shouldnt be triggered, but for when no entitytype
   if (!entityType) {
     return (
       <View style={styles.container}>

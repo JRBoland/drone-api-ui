@@ -2,17 +2,19 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AuthContext = createContext({
-  isAuthenticated: false,
+  isAuthenticated: false, // default
   login: () => {},
   logout: () => {},
 });
 
+// type definition for props
 type AuthProviderProps = {
-  children: ReactNode; 
+  children: ReactNode; // Children prop to allow any reactnode to be rendered inside AuthProvider
 };
 
 export const useAuth = () => useContext(AuthContext);
 
+// to be used in app.tsx
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 

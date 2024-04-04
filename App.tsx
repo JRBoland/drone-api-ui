@@ -12,6 +12,7 @@ import EntityScreen from './screens/EntityScreen'
 
 const Stack = createStackNavigator()
 
+// unauthenticated
 function MainStack() {
   return (
     <Stack.Navigator>
@@ -23,13 +24,14 @@ function MainStack() {
       <Stack.Screen
         name="Home"
         component={HomeScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false }} // not needed (logout button exists)
       />
       <Stack.Screen name="Entity" component={EntityScreen} />
     </Stack.Navigator>
   )
 }
 
+// authenticated
 function AuthStack() {
   return (
     <Stack.Navigator>

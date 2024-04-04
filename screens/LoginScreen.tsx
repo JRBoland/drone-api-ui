@@ -18,7 +18,6 @@ type Props = {
   }
 }
 
-// not sure on what prop type to use here
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -56,6 +55,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     }
   }
 
+  // todo: Potentially integrate create new user here when integrating user entity funcitonality
   return (
     <View style={styles.container}>
       <View style={styles.loginContainer}>

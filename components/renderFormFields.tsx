@@ -6,6 +6,7 @@ import {
   EntityConfig,
 } from '../config/entityConfigurations'
 
+// types
 export interface RenderFormFieldsProps {
   entityConfig: EntityConfig| null
   operation: string
@@ -17,6 +18,7 @@ export interface RenderFormFieldsProps {
   handleInputChange: (field: string, value: string) => void
 }
 
+// dynamically generates form fields based on entityconfig 
 export const renderFormFields = ({
   entityConfig,
   operation,
@@ -25,14 +27,18 @@ export const renderFormFields = ({
   styles,
   handleInputChange,
 }: RenderFormFieldsProps) => {
+
+  // no fields rendered if operation is delete
   if (!entityConfig || operation === '' || operation === 'delete') {
     return null
   }
 
+  // renders appropriate input fields, iterating over each field in entityconfig
   return entityConfig.fields.map((field: FieldConfig) => {
     const isMandatoryForCreate =
       !('required' in field) || field.required !== false
 
+    // includes additional mandatory id field for update/delete
     const isMandatory =
       (operation === 'create' && isMandatoryForCreate) ||
       (operation === 'update' && field.name === 'id') ||
