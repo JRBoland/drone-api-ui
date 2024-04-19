@@ -58,7 +58,7 @@ const ManageEntityScreen: React.FC = () => {
     } ${operationWord.charAt(0).toUpperCase() + operationWord.slice(1)}:`
     let formattedResponse = title + '\n\n'
 
-    // Different message for delete operation
+    // Different message for delete operation (to avoid ":")
     if (operation === 'delete') {
       return `${
         entityType.charAt(0).toUpperCase() + entityType.slice(1, -1)
@@ -80,7 +80,7 @@ const ManageEntityScreen: React.FC = () => {
           if (typeof value === 'object' && value !== null) {
             return `${formattedKey}:\n${formatObject(value).replace(
               /^/gm,
-              '  '
+              '  ' // adds two spaces at the beginning of each line
             )}\n`
           } else {
             return `${formattedKey}: ${value}`
@@ -118,7 +118,7 @@ const ManageEntityScreen: React.FC = () => {
       switch (status) {
         case 400: // bad request
           return `Your request could not be completed. \nPlease check the required fields and try again.`
-        case 400: // unauthorised
+        case 401: // unauthorised
           return 'You must be authenticated to complete this action. \nPlease log in and try again.'
         case 403: // forbidden (unauthorised)
           return 'You do not have permission to perform this action.'

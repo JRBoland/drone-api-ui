@@ -49,7 +49,7 @@ const HomeScreen = ({ navigation }: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.welcomeText}>
-        Logged in as:{'\n'}
+        Hello {'\n'}
         {'\n'}
         {username} 👋{' '}
       </Text>
@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: '#FFF',
-    paddingTop: 20,
   },
   button: {
     borderWidth: 1,
@@ -119,7 +118,7 @@ const styles = StyleSheet.create({
   welcomeText: {
     justifyContent: 'center',
     width: 180,
-    marginTop: 140,
+    marginTop: 60,
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',

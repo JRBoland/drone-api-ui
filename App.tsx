@@ -24,7 +24,7 @@ function MainStack() {
       <Stack.Screen
         name="Home"
         component={HomeScreen}
-        options={{ headerShown: false }} // not needed (logout button exists)
+        //options={{ headerShown: false }} // not needed? (logout button exists)
       />
       <Stack.Screen name="Entity" component={EntityScreen} />
     </Stack.Navigator>

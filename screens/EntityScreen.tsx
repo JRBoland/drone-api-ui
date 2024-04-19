@@ -66,14 +66,14 @@ const EntityScreen: React.FC = () => {
       navigation.navigate('Manage', { entityType })
     } else if (Platform.OS === 'web') {
       window.alert(
-        `Authentication required to manage ${entityType}, please log in`
+        `Authentication required to manage "${entityType}". Please log in.`
       )
       navigation.navigate('Login')
     } else {
       console.log('not authenticated')
       Alert.alert(
         'Authentication required',
-        `Please log in to manage ${entityType}`,
+        `Please log in to manage "${entityType}"`,
         [
           { text: 'Login', onPress: () => navigation.navigate('Login') },
           { text: 'Cancel', style: 'cancel' },
@@ -85,22 +85,23 @@ const EntityScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        <View style={styles.manageContainer}>
-          <Pressable style={styles.button} onPress={handleManageEntities}>
-            <Text style={styles.buttonText}>{`𝌶 Manage ${entityType}`}</Text>
-          </Pressable>
-        </View>
-        <View style={styles.table}>
-          <FlatList
-            data={entities}
-            ListEmptyComponent={
-              <Text style={styles.text}>{`No ${entityType} found`}</Text>
-            }
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => renderEntityItem(entityType, item)}
-            ListHeaderComponent={() => renderEntityHeader(entityType)}
-          />
-        </View>
+      <View style={styles.manageContainer}>
+        <Text style={styles.entityHeader}>{`${entityType} List`}</Text>
+        <Pressable style={styles.button} onPress={handleManageEntities}>
+          <Text style={styles.buttonText}>{`𝌶 Manage ${entityType}`}</Text>
+        </Pressable>
+      </View>
+      <View style={styles.table}>
+        <FlatList
+          data={entities}
+          ListEmptyComponent={
+            <Text style={styles.text}>{`No ${entityType} found`}</Text>
+          }
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => renderEntityItem(entityType, item)}
+          ListHeaderComponent={() => renderEntityHeader(entityType)}
+        />
+      </View>
     </SafeAreaView>
   )
 }
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 5,
-    paddingTop: 20,
+    paddingTop: 5,
     backgroundColor: '#FFF',
   },
   button: {
@@ -136,9 +137,17 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 6,
   },
+  entityHeader: {
+    fontSize: 20,
+    paddingHorizontal: 10,
+    marginRight: 40,
+    justifyContent: 'center',
+    height: 40,
+  },
   manageContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   instructionsText: {
     width: 160,
