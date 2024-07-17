@@ -71,7 +71,7 @@ export const renderFormFields = ({
       // renders rest of fields
       return (
         <View key={field.name} style={styles.fieldContainer}>
-          <Text style={{ color: '#ff5e5b' }}>
+          <Text style={{ color: '#ff5e5b', fontFamily: 'SpaceGrotesk_400Regular', }}>
             {field.placeholder}
             {isMandatory && operation === 'create' ? ' *' : ''}
           </Text>

@@ -111,7 +111,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 5,
     paddingTop: 5,
-    backgroundColor: '#FFF',
+    backgroundColor: '#181818',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   button: {
     borderWidth: 1,
@@ -128,14 +129,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     textAlign: 'center',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   text: {
     marginTop: 4,
     marginHorizontal: 10,
-    color: '#000',
+    color: '#181818',
     backgroundColor: '#d8d8d8',
     padding: 10,
     borderRadius: 6,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   entityHeader: {
     fontSize: 20,
@@ -143,6 +146,8 @@ const styles = StyleSheet.create({
     marginRight: 40,
     justifyContent: 'center',
     height: 40,
+    fontFamily: 'SpaceGrotesk_400Regular',
+    color: '#fffefc',
   },
   manageContainer: {
     flexDirection: 'row',
@@ -154,7 +159,10 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   table: {
-    margin: 5,
+    margin: 5,  
+  },
+  entitiesTable: {
+
   },
 })
 

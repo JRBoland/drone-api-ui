@@ -115,12 +115,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   input: {
     marginBottom: 10,
     borderWidth: 1,
     padding: 10,
     borderRadius: 6,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   error: {
     color: 'red',
@@ -131,11 +133,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   titleText: {
     fontSize: 24,
     fontWeight: 'bold',
     marginVertical: 40,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   loginContainer: {
     margin: 40,

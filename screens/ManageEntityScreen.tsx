@@ -22,7 +22,7 @@ const ManageEntityScreen: React.FC = () => {
   }>({})
   const [responseMessage, setResponseMessage] = useState('')
 
-  // grabbing entitytype 
+  // grabbing entitytype
   const entityType = route.params?.entityType as string
   const entityConfig = entityType ? entityConfigurations[entityType] : null
   const [refreshing, setRefreshing] = React.useState(false)
@@ -63,7 +63,6 @@ const ManageEntityScreen: React.FC = () => {
       return `${
         entityType.charAt(0).toUpperCase() + entityType.slice(1, -1)
       } deleted.`
-      
     }
 
     // A recursive function to format nested objects correctly for readability
@@ -185,7 +184,7 @@ const ManageEntityScreen: React.FC = () => {
           console.log('No operation default switch state triggered')
           return
       }
-      
+
       // api response
       if (response && response.data) {
         const responseData = response.data
@@ -326,7 +325,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#181818',
     paddingTop: 20,
   },
 
@@ -339,6 +338,8 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
+    fontFamily: 'SpaceGrotesk_400Regular',
+    color: '#fffefc'
   },
   input: {
     width: 220,
@@ -348,17 +349,19 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     backgroundColor: '#FFFFEA',
     padding: 10,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   italicPlaceholder: {
     fontStyle: 'italic',
-    color: '#999',
+    color: '#fafafa',
     textTransform: 'capitalize',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   button: {
     borderWidth: 1,
     borderRadius: 4,
     padding: 15,
-    
+
     marginVertical: 6,
     width: 180,
     backgroundColor: '#ffed66',
@@ -366,7 +369,8 @@ const styles = StyleSheet.create({
   operationText: {
     textTransform: 'uppercase',
     textAlign: 'center',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   submitButton: {
     borderWidth: 2,
@@ -380,20 +384,24 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   titleText: {
     textTransform: 'capitalize',
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 20,
+    fontFamily: 'SpaceGrotesk_400Regular',
+    color: '#fffefc',
   },
   responseText: {
     padding: 10,
-    backgroundColor: '#FFFAF0',
+    backgroundColor: '#fffefc',
     borderRadius: 6,
     borderWidth: 2,
-    color: '#000',
+    color: '#fffefc',
     textAlign: 'left',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   responseMessageContainer: {
     borderRadius: 5,
@@ -401,11 +409,14 @@ const styles = StyleSheet.create({
     minWidth: 300,
     padding: 10,
     margin: 20,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   instructionsText: {
     width: 200,
     fontStyle: 'italic',
     margin: 20,
+    fontFamily: 'SpaceGrotesk_400Regular',
+    color: '#fffefc',
   },
   fieldContainer: {
     flexDirection: 'column',
@@ -413,6 +424,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     width: 220,
     borderColor: '#ff5e5b',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   checkbox: {
     flexDirection: 'row-reverse',
@@ -421,10 +433,11 @@ const styles = StyleSheet.create({
     borderColor: '#00cecb',
   },
   checkboxText: {
-    color: '#000',
+    color: '#fffefc',
     textTransform: 'capitalize',
     fontSize: 14,
     textDecorationLine: 'none',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   icon: {
     borderRadius: 4,

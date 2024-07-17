@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from "react-native"
+import { StyleSheet, View, Text } from 'react-native'
 
 // renders different cell titles and sizes based on fields
 export const renderEntityItem = (entityType: string, item: any) => {
@@ -91,6 +91,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRightWidth: 2,
     borderColor: '#d8d8d8',
+    color: '#fffefc',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   tableHeader: {
     flexDirection: 'row',
@@ -103,6 +105,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontWeight: 'bold',
     padding: 2,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   table: {
     margin: 5,

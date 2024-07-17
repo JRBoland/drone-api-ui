@@ -6,16 +6,39 @@ import { createStackNavigator } from '@react-navigation/stack'
 import HomeScreen from './screens/HomeScreen'
 import LoginScreen from './screens/LoginScreen'
 import ManageEntityScreen from './screens/ManageEntityScreen'
-
+import {
+  useFonts,
+  SpaceGrotesk_300Light,
+  SpaceGrotesk_400Regular,
+  SpaceGrotesk_700Bold,
+} from '@expo-google-fonts/space-grotesk'
 import { AuthProvider, useAuth } from './utils/authContext'
 import EntityScreen from './screens/EntityScreen'
 
 const Stack = createStackNavigator()
 
+const headerStyle = {
+  backgroundColor: '#181818',
+}
+
+const headerTitleStyle = {
+  fontWeight: 'bold' as 'bold',
+  fontFamily: 'SpaceGrotesk_700Bold', 
+  color: '#fffefc',
+}
+
+const headerTintColor = '#fffefc';
+
 // unauthenticated
 function MainStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: headerStyle,
+        headerTitleStyle: headerTitleStyle,
+        headerTintColor: headerTintColor,
+      }}
+    >
       <Stack.Screen
         name="Login"
         component={LoginScreen}
@@ -34,7 +57,13 @@ function MainStack() {
 // authenticated
 function AuthStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: headerStyle,
+        headerTitleStyle: headerTitleStyle,
+        headerTintColor: headerTintColor,
+      }}
+    >
       <Stack.Screen
         name="Login"
         component={LoginScreen}
@@ -62,6 +91,12 @@ function AppNavigator() {
 }
 
 export default function App() {
+  useFonts({
+    SpaceGrotesk_300Light,
+    SpaceGrotesk_400Regular,
+    SpaceGrotesk_700Bold,
+  })
+
   return (
     <AuthProvider>
       <AppNavigator />

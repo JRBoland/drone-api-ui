@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: '#FFF',
+    backgroundColor: '#fffefc',
   },
   button: {
     borderWidth: 1,
@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'SpaceGrotesk_700Bold',
   },
   welcomeText: {
     justifyContent: 'center',
@@ -122,6 +123,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   buttonsContainer: {
     height: 'auto',
@@ -132,6 +134,7 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     textAlign: 'left',
     fontStyle: 'italic',
+    fontFamily: 'SpaceGrotesk_300Light',
   },
 })
 
