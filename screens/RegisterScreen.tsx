@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import {
   View,
   TextInput,
-  Button,
   Text,
   StyleSheet,
   Pressable,
 } from 'react-native'
+import { RadioButton } from 'react-native-paper'
 import api from '../services/apiService'
 
 type Props = {
@@ -18,21 +18,20 @@ type Props = {
 const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [roles, setRoles] = useState('')
+  const [role, setRole] = useState<'admin' | 'user'>('user') // default to 'user'
   const [error, setError] = useState('')
 
   const handleRegister = async () => {
     try {
-      const rolesArray = roles.split(',').map((role) => role.trim())
       console.log('Starting registration request with:', {
         username,
         password,
-        roles: rolesArray,
+        roles: [role],
       })
       const response = await api.post('Users', {
         username,
         password,
-        roles: rolesArray,
+        roles: [role],
       })
       console.log('Registration response:', response.data)
       navigation.navigate('Login')
@@ -60,12 +59,25 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
             secureTextEntry
             style={styles.input}
           />
-          <TextInput
-            placeholder="Role? (enter 'admin' for admin)"
-            value={roles}
-            onChangeText={setRoles}
-            style={styles.input}
-          />
+          <View style={styles.radioContainer}>
+            <Text style={styles.radioLabel}>Role:</Text>
+            <View style={styles.radioOption}>
+              <RadioButton
+                value="user"
+                status={role === 'user' ? 'checked' : 'unchecked'}
+                onPress={() => setRole('user')}
+              />
+              <Text>User</Text>
+            </View>
+            <View style={styles.radioOption}>
+              <RadioButton
+                value="admin"
+                status={role === 'admin' ? 'checked' : 'unchecked'}
+                onPress={() => setRole('admin')}
+              />
+              <Text>Admin</Text>
+            </View>
+          </View>
           {error ? <Text style={styles.error}>{error}</Text> : null}
         </View>
         <View style={styles.buttonContainer}>
@@ -132,6 +144,20 @@ const styles = StyleSheet.create({
   },
   registerFieldsContainer: {
     marginVertical: 20,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  radioLabel: {
+    fontSize: 16,
+    fontFamily: 'SpaceGrotesk_400Regular',
+  },
+  radioOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 10,
   },
   buttonContainer: {
     alignItems: 'center',

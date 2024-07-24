@@ -75,6 +75,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.buttonText}>Login</Text>
           </Pressable>
         </View>
+        <br />
         <View style={styles.buttonContainer}>
           <Pressable
             style={[styles.button, { backgroundColor: '#00CECB' }]}

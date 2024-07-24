@@ -29,11 +29,40 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { FontAwesome } from '@expo/vector-icons'
 import { Switch } from 'react-native'
+import { AxiosError } from 'axios'
+
+const errorStatusMessage = (error: AxiosError) => {
+  if (error.response && error.response.status) {
+    const { status } = error.response
+
+    switch (status) {
+      case 400: // bad request
+        return `Your request could not be completed. \nPlease check the required fields and try again.`
+      case 401: // unauthorized
+        return 'You must be authenticated to complete this action. \nPlease log in and try again.'
+      case 403: // forbidden (unauthorized)
+        return 'You do not have permission to perform this action.'
+      case 404:
+        return 'Resource was not found, please check and try again.'
+      case 408:
+        return 'Request timed out. Please try again'
+      case 500:
+        return 'An internal server error occurred.'
+      default:
+        return `An error occurred: ${status}`
+    }
+  } else {
+    return `An unknown error occurred: ${error.message}`
+  }
+}
 
 const EntityScreen: React.FC = () => {
   const route = useRoute()
   const { entityType } = route.params as { entityType: string }
   const [entities, setEntities] = useState<Entity[]>([])
+  const [filteredEntities, setFilteredEntities] = useState<Entity[]>([])
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [isSearchActive, setIsSearchActive] = useState(false)
   const [pilots, setPilots] = useState<{
     [key: number]: { name: string; flights_recorded?: number }
   }>({})
@@ -67,17 +96,19 @@ const EntityScreen: React.FC = () => {
     fetchPilotsAndDrones()
   }, [])
 
+  useEffect(() => {
+    filterEntities()
+  }, [searchQuery, entities])
+
   const fetchData = async () => {
     try {
       const response = await fetchEntityData<Entity>(entityType, false)
       const sortedEntities = response.data.sort((a, b) => a.id - b.id)
       setEntities(sortedEntities)
     } catch (error: any) {
-      console.error(
-        `Error fetching ${entityType.toLowerCase()}:`,
-        error.message
-      )
-      setError(`Error fetching ${entityType.toLowerCase()}: ${error.message}`)
+      const errorMessage = errorStatusMessage(error)
+      console.error(`Error fetching ${entityType.toLowerCase()}:`, errorMessage)
+      setError(errorMessage)
     }
   }
 
@@ -115,8 +146,38 @@ const EntityScreen: React.FC = () => {
       setPilots(pilotsData)
       setDrones(dronesData)
     } catch (error: any) {
-      console.error('Error fetching pilots or drones:', error.message)
-      setError(`Error fetching pilots or drones: ${error.message}`)
+      const errorMessage = errorStatusMessage(error)
+      console.error('Error fetching pilots or drones:', errorMessage)
+      setError(errorMessage)
+    }
+  }
+
+  const filterEntities = () => {
+    if (searchQuery === '') {
+      setFilteredEntities(entities)
+    } else {
+      const query = searchQuery.toLowerCase()
+      const filtered = entities.filter((entity) => {
+        if (isFlight(entity)) {
+          return (
+            entity.flight_location.toLowerCase().includes(query) ||
+            entity.drone_id.toString().includes(query) ||
+            entity.pilot_id.toString().includes(query)
+          )
+        } else if (isDrone(entity)) {
+          return (
+            entity.name.toLowerCase().includes(query) ||
+            entity.id.toString().includes(query)
+          )
+        } else if (isPilot(entity)) {
+          return (
+            entity.name.toLowerCase().includes(query) ||
+            entity.id.toString().includes(query)
+          )
+        }
+        return false
+      })
+      setFilteredEntities(filtered)
     }
   }
 
@@ -139,10 +200,14 @@ const EntityScreen: React.FC = () => {
       const dataToSend = { ...formData }
       console.log('Form data before adding:', dataToSend)
 
-      // Convert fields to their appropriate types
+      // Convert fields to their appropriate types and validate number fields
       config.fields.forEach((field) => {
         if (field.type === 'number') {
-          dataToSend[field.name] = Number(dataToSend[field.name]) || 0 // Handle NaN conversion
+          const numberValue = Number(dataToSend[field.name])
+          if (isNaN(numberValue)) {
+            throw new Error(`${field.placeholder} must be a number.`)
+          }
+          dataToSend[field.name] = numberValue
         } else if (field.type === 'boolean') {
           dataToSend[field.name] =
             dataToSend[field.name] === 'true' || dataToSend[field.name] === true
@@ -155,7 +220,7 @@ const EntityScreen: React.FC = () => {
       onRefresh()
     } catch (error: any) {
       console.error(`Error adding ${entityType.toLowerCase()}:`, error.message)
-      setError(`Error adding ${entityType.toLowerCase()}: ${error.message}`)
+      setError(error.message)
     }
   }
 
@@ -174,11 +239,15 @@ const EntityScreen: React.FC = () => {
         return acc
       }, {} as { [key: string]: any })
 
-      // Convert fields to their appropriate types
+      // Convert fields to their appropriate types and validate number fields
       config.fields.forEach((field) => {
         if (changedData.hasOwnProperty(field.name)) {
           if (field.type === 'number') {
-            changedData[field.name] = Number(changedData[field.name]) || 0
+            const numberValue = Number(changedData[field.name])
+            if (isNaN(numberValue)) {
+              throw new Error(`${field.placeholder} must be a number.`)
+            }
+            changedData[field.name] = numberValue
           } else if (field.type === 'boolean') {
             changedData[field.name] =
               changedData[field.name] === 'true' ||
@@ -196,7 +265,7 @@ const EntityScreen: React.FC = () => {
         `Error updating ${entityType.toLowerCase()}:`,
         error.message
       )
-      setError(`Error updating ${entityType.toLowerCase()}: ${error.message}`)
+      setError(error.message)
     }
   }
 
@@ -212,11 +281,9 @@ const EntityScreen: React.FC = () => {
       await deleteEntity(entityType, id)
       onRefresh()
     } catch (error: any) {
-      console.error(
-        `Error deleting ${entityType.toLowerCase()}:`,
-        error.message
-      )
-      setError(`Error deleting ${entityType.toLowerCase()}: ${error.message}`)
+      const errorMessage = errorStatusMessage(error)
+      console.error(`Error deleting ${entityType.toLowerCase()}:`, errorMessage)
+      setError(errorMessage)
     }
   }
 
@@ -230,6 +297,15 @@ const EntityScreen: React.FC = () => {
     setIsAdding(true)
     setIsEditing({})
     setFormData({ footage_recorded: false }) // Reset form data to initial values
+  }
+
+  const startSearch = () => {
+    setIsSearchActive(true)
+  }
+
+  const clearSearch = () => {
+    setSearchQuery('')
+    setIsSearchActive(false)
   }
 
   const renderCard = ({ item }: { item: Entity }) => {
@@ -330,7 +406,9 @@ const EntityScreen: React.FC = () => {
             <>
               <Text style={styles.cardTitle}>{item.name}</Text>
               <Text style={styles.cardDetails}>ID: {item.id}</Text>
-              <Text style={styles.cardDetails}>Weight: {item.weight}</Text>
+              <Text style={styles.cardDetails}>
+                Weight (grams): {item.weight}
+              </Text>
             </>
           ) : isPilot(item) ? (
             <>
@@ -369,16 +447,34 @@ const EntityScreen: React.FC = () => {
       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{`${entityType} List`}</Text>
-        {isAuthenticated && (
-          <View style={styles.headerButtons}>
-            <Pressable onPress={startAdding}>
-              <FontAwesome name="plus" size={24} color="black" />
-            </Pressable>
-            <Pressable>
-              <FontAwesome name="search" size={24} color="black" />
+        {isSearchActive && (
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search..."
+              value={searchQuery}
+              onChangeText={(text) => setSearchQuery(text)}
+            />
+            <Pressable onPress={clearSearch}>
+              <FontAwesome name="times" size={24} color="black" />
             </Pressable>
           </View>
         )}
+        <View style={styles.headerButtons}>
+          {!isSearchActive && (
+            <>
+              {isAuthenticated && (
+                <Pressable onPress={startAdding}>
+                  <FontAwesome name="plus" size={24} color="black" />
+                </Pressable>
+              )}
+
+              <Pressable onPress={startSearch}>
+                <FontAwesome name="search" size={24} color="black" />
+              </Pressable>
+            </>
+          )}
+        </View>
       </View>
       {isAdding && (
         <View style={styles.editCard}>
@@ -426,7 +522,7 @@ const EntityScreen: React.FC = () => {
         </View>
       )}
       <FlatList
-        data={entities}
+        data={filteredEntities}
         ListEmptyComponent={
           <Text
             style={styles.text}
@@ -463,6 +559,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontSize: 20,
     gap: 20,
+    fontFamily: 'SpaceGrotesk_400Regular',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    flex: 1,
+  },
+  searchInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 6,
+    borderColor: '#ccc',
+    backgroundColor: '#FFF',
+    padding: 10,
     fontFamily: 'SpaceGrotesk_400Regular',
   },
   switchContainer: {
@@ -541,6 +653,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 10,
     backgroundColor: '#ddd',
+    minWidth: 140,
   },
   buttonText: {
     color: '#333',
