@@ -14,6 +14,7 @@ import {
 } from '@expo-google-fonts/space-grotesk'
 import { AuthProvider, useAuth } from './utils/authContext'
 import EntityScreen from './screens/EntityScreen'
+import RegisterScreen from './screens/RegisterScreen'
 
 const Stack = createStackNavigator()
 
@@ -23,11 +24,11 @@ const headerStyle = {
 
 const headerTitleStyle = {
   fontWeight: 'bold' as 'bold',
-  fontFamily: 'SpaceGrotesk_700Bold', 
+  fontFamily: 'SpaceGrotesk_700Bold',
   color: '#fffefc',
 }
 
-const headerTintColor = '#fffefc';
+const headerTintColor = '#fffefc'
 
 // unauthenticated
 function MainStack() {
@@ -44,6 +45,7 @@ function MainStack() {
         component={LoginScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen
         name="Home"
         component={HomeScreen}
@@ -69,6 +71,7 @@ function AuthStack() {
         component={LoginScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen
         name="Home"
         component={HomeScreen}

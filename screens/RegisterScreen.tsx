@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   View,
   TextInput,
@@ -7,10 +7,7 @@ import {
   StyleSheet,
   Pressable,
 } from 'react-native'
-import axios from 'axios'
 import api from '../services/apiService'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useAuth } from '../utils/authContext'
 
 type Props = {
   navigation: {
@@ -18,43 +15,38 @@ type Props = {
   }
 }
 
-const LoginScreen: React.FC<Props> = ({ navigation }) => {
+const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [roles, setRoles] = useState('')
   const [error, setError] = useState('')
 
-  const { login, isAuthenticated } = useAuth()
-
-  useEffect(() => {
-    const checkAuthentication = async () => {
-      const token = await AsyncStorage.getItem('userToken')
-      if (isAuthenticated || token) {
-        navigation.navigate('Home')
-      }
-    }
-    checkAuthentication()
-  }, [navigation, isAuthenticated])
-
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     try {
-      const response = await api.post('auth/login', { username, password })
-      const { access_token } = response.data
-      await AsyncStorage.setItem('userToken', access_token)
-      await AsyncStorage.setItem('username', username)
-      navigation.navigate('Home')
-      login()
+      const rolesArray = roles.split(',').map((role) => role.trim())
+      console.log('Starting registration request with:', {
+        username,
+        password,
+        roles: rolesArray,
+      })
+      const response = await api.post('Users', {
+        username,
+        password,
+        roles: rolesArray,
+      })
+      console.log('Registration response:', response.data)
+      navigation.navigate('Login')
     } catch (err) {
-      console.error('Login error:', err)
-      setError('Failed to login. Please check your username and password.')
+      console.error('Registration error:', err)
+      setError('Failed to register. Please try again.')
     }
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.loginContainer}>
-        <Text style={styles.titleText}>Drone Flight Logger</Text>
-        <Text style={styles.loginTitle}>Login:</Text>
-        <View style={styles.loginFieldsContainer}>
+      <View style={styles.registerContainer}>
+        <Text style={styles.titleText}>Register</Text>
+        <View style={styles.registerFieldsContainer}>
           <TextInput
             placeholder="Username"
             value={username}
@@ -68,27 +60,25 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             secureTextEntry
             style={styles.input}
           />
+          <TextInput
+            placeholder="Role? (enter 'admin' for admin)"
+            value={roles}
+            onChangeText={setRoles}
+            style={styles.input}
+          />
           {error ? <Text style={styles.error}>{error}</Text> : null}
         </View>
         <View style={styles.buttonContainer}>
-          <Pressable style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Login</Text>
-          </Pressable>
-        </View>
-        <View style={styles.buttonContainer}>
-          <Pressable
-            style={[styles.button, { backgroundColor: '#00CECB' }]}
-            onPress={() => navigation.navigate('Home')}
-          >
-            <Text style={styles.buttonText}>Continue as Guest</Text>
+          <Pressable style={styles.button} onPress={handleRegister}>
+            <Text style={styles.buttonText}>Register</Text>
           </Pressable>
         </View>
         <View style={styles.buttonContainer}>
           <Pressable
             style={[styles.button, { backgroundColor: '#FF5E5B' }]}
-            onPress={() => navigation.navigate('Register')}
+            onPress={() => navigation.navigate('Login')}
           >
-            <Text style={styles.buttonText}>Create Account</Text>
+            <Text style={styles.buttonText}>Back to Login</Text>
           </Pressable>
         </View>
       </View>
@@ -128,12 +118,6 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     marginVertical: 10,
-  },
-  loginTitle: {
-    paddingTop: 20,
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'left',
     fontFamily: 'SpaceGrotesk_400Regular',
   },
   titleText: {
@@ -142,11 +126,11 @@ const styles = StyleSheet.create({
     marginVertical: 40,
     fontFamily: 'SpaceGrotesk_400Regular',
   },
-  loginContainer: {
+  registerContainer: {
     margin: 40,
     width: 300,
   },
-  loginFieldsContainer: {
+  registerFieldsContainer: {
     marginVertical: 20,
   },
   buttonContainer: {
@@ -154,4 +138,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default LoginScreen
+export default RegisterScreen

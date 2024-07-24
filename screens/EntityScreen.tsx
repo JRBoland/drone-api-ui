@@ -329,16 +329,14 @@ const EntityScreen: React.FC = () => {
           ) : isDrone(item) ? (
             <>
               <Text style={styles.cardTitle}>{item.name}</Text>
-              <Text style={styles.cardDetails}>
-                ID: {item.id} Weight: {item.weight}
-              </Text>
+              <Text style={styles.cardDetails}>ID: {item.id}</Text>
+              <Text style={styles.cardDetails}>Weight: {item.weight}</Text>
             </>
           ) : isPilot(item) ? (
             <>
               <Text style={styles.cardTitle}>{item.name}</Text>
-              <Text style={styles.cardDetails}>
-                ID: {item.id} Age: {item.age}
-              </Text>
+              <Text style={styles.cardDetails}>ID: {item.id}</Text>
+              <Text style={styles.cardDetails}>Age: {item.age}</Text>
               <Text style={styles.cardDetails}>
                 Flights Recorded: {pilots[item.id]?.flights_recorded}
               </Text>
