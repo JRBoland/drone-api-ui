@@ -49,9 +49,9 @@ const HomeScreen = ({ navigation }: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.welcomeText}>
-        Hello {'\n'}
+        Hello 👋{'\n'}
         {'\n'}
-        {username} 👋{' '}
+        You are logged in as: {username}{' '}
       </Text>
 
       <View style={styles.buttonsContainer}>

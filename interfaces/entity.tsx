@@ -8,6 +8,7 @@ export interface Pilot {
   id: number
   name: string
   age: number
+  flights_recorded: number
 }
 
 export interface Flight {
