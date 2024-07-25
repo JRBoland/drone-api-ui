@@ -1,45 +1,55 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   View,
   TextInput,
   Text,
   StyleSheet,
   Pressable,
-} from 'react-native'
-import { RadioButton } from 'react-native-paper'
-import api from '../services/apiService'
+  TouchableOpacity
+} from 'react-native';
+import { RadioButton } from 'react-native-paper';
+import api from '../services/apiService';
+import { Ionicons } from '@expo/vector-icons';
 
 type Props = {
   navigation: {
-    navigate: (screen: string) => void
-  }
-}
+    navigate: (screen: string) => void;
+  };
+};
 
 const RegisterScreen: React.FC<Props> = ({ navigation }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [role, setRole] = useState<'admin' | 'user'>('user') // default to 'user'
-  const [error, setError] = useState('')
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState<'admin' | 'user'>('user'); // default to 'user'
+  const [error, setError] = useState('');
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
     try {
       console.log('Starting registration request with:', {
         username,
         password,
         roles: [role],
-      })
+      });
       const response = await api.post('Users', {
         username,
         password,
         roles: [role],
-      })
-      console.log('Registration response:', response.data)
-      navigation.navigate('Login')
+      });
+      console.log('Registration response:', response.data);
+      navigation.navigate('Login');
     } catch (err) {
-      console.error('Registration error:', err)
-      setError('Failed to register. Please try again.')
+      console.error('Registration error:', err);
+      setError('Failed to register. Please try again.');
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -52,13 +62,42 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
             onChangeText={setUsername}
             style={styles.input}
           />
-          <TextInput
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            style={styles.input}
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!isPasswordVisible}
+              style={styles.passwordInput}
+            />
+            <TouchableOpacity
+              onPress={() => setPasswordVisible(!isPasswordVisible)}
+            >
+              <Ionicons
+                name={isPasswordVisible ? 'eye' : 'eye-off'}
+                size={24}
+                color="black"
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry={!isConfirmPasswordVisible}
+              style={styles.passwordInput}
+            />
+            <TouchableOpacity
+              onPress={() => setConfirmPasswordVisible(!isConfirmPasswordVisible)}
+            >
+              <Ionicons
+                name={isConfirmPasswordVisible ? 'eye' : 'eye-off'}
+                size={24}
+                color="black"
+              />
+            </TouchableOpacity>
+          </View>
           <View style={styles.radioContainer}>
             <Text style={styles.radioLabel}>Role:</Text>
             <View style={styles.radioOption}>
@@ -95,8 +134,8 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -162,6 +201,18 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: 'center',
   },
-})
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 6,
+    marginBottom: 10,
+  },
+  passwordInput: {
+    flex: 1,
+    fontFamily: 'SpaceGrotesk_400Regular',
+  },
+});
 
-export default RegisterScreen
+export default RegisterScreen;
