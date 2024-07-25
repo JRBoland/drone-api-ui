@@ -37,6 +37,7 @@ const HomeScreen = ({ navigation }: any) => {
         Alert.alert('You have logged out')
       }
       logout()
+      navigation.navigate('Login')
     } else {
       navigation.navigate('Login')
     }
