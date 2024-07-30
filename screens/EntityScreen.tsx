@@ -27,6 +27,7 @@ import { AxiosError } from 'axios'
 import { errorStatusMessage } from '../utils/errorUtils'
 import Header from '../components/Header'
 import EntityCard from '../components/EntityCard'
+import Loader from '../components/Loader'
 
 const EntityScreen: React.FC = () => {
   const route = useRoute()
@@ -49,6 +50,7 @@ const EntityScreen: React.FC = () => {
   })
   const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
   const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
@@ -73,6 +75,7 @@ const EntityScreen: React.FC = () => {
   }, [searchQuery, entities])
 
   const fetchData = async () => {
+    setLoading(true) // Show loader
     try {
       const response = await fetchEntityData<Entity>(entityType, false)
       const sortedEntities = response.data.sort((a, b) => a.id - b.id)
@@ -81,6 +84,8 @@ const EntityScreen: React.FC = () => {
       const errorMessage = errorStatusMessage(error)
       console.error(`Error fetching ${entityType.toLowerCase()}:`, errorMessage)
       setError(errorMessage)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -278,6 +283,10 @@ const EntityScreen: React.FC = () => {
   const clearSearch = () => {
     setSearchQuery('')
     setIsSearchActive(false)
+  }
+
+  if (loading) {
+    return <Loader />; 
   }
 
   return (
