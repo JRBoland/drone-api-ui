@@ -76,7 +76,7 @@ const HomeScreen = ({ navigation }: any) => {
           <Text style={styles.buttonText}>Flights</Text>
         </Pressable>
 
-        <Pressable
+        {/*<Pressable
           style={[
             styles.button,
             isAuthenticated
@@ -89,7 +89,7 @@ const HomeScreen = ({ navigation }: any) => {
           <Text style={styles.buttonText}>
             {isAuthenticated ? 'Logout' : 'Login'}
           </Text>
-        </Pressable>
+        </Pressable>*/}
       </View>
     </SafeAreaView>
   )
