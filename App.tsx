@@ -15,7 +15,7 @@ import {
 import { AuthProvider, useAuth } from './utils/authContext'
 import EntityScreen from './screens/EntityScreen'
 import RegisterScreen from './screens/RegisterScreen'
-import { Pressable, Text } from 'react-native'
+import AuthButton from './components/AuthButton'
 
 const Stack = createStackNavigator()
 
@@ -24,44 +24,12 @@ const headerStyle = {
 }
 
 const headerTitleStyle = {
-  fontWeight: 'bold',
+  fontWeight: 'bold' as 'bold',
   fontFamily: 'SpaceGrotesk_700Bold',
   color: '#fffefc',
 }
 
 const headerTintColor = '#fffefc'
-
-function AuthButton({ navigation }: any) {
-  const { isAuthenticated, logout } = useAuth()
-
-  const handlePress = () => {
-    if (isAuthenticated) {
-      logout()
-      navigation.navigate('Login')
-    } else {
-      navigation.navigate('Login')
-    }
-  }
-
-  return (
-    <Pressable onPress={handlePress}>
-      <Text
-        style={{
-          borderWidth: 1,
-          borderRadius: 4,
-          padding: 10,
-          paddingHorizontal: 20,
-          margin: 8,
-          marginHorizontal: 12,
-          backgroundColor: '#fffefc',
-          fontFamily: 'SpaceGrotesk_400Regular',
-        }}
-      >
-        {isAuthenticated ? 'Logout' : 'Login'}
-      </Text>
-    </Pressable>
-  )
-}
 
 // Unauthenticated stack
 function MainStack() {
