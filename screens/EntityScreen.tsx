@@ -76,16 +76,20 @@ const EntityScreen: React.FC = () => {
 
   const fetchData = async () => {
     setLoading(true) // Show loader
+    console.log('Starting fetchData for entityType:', entityType)
     try {
       const response = await fetchEntityData<Entity>(entityType, false)
+      console.log('fetchEntityData response:', response)
       const sortedEntities = response.data.sort((a, b) => a.id - b.id)
       setEntities(sortedEntities)
+      console.log('Sorted entities set successfully')
     } catch (error: any) {
       const errorMessage = errorStatusMessage(error)
       console.error(`Error fetching ${entityType.toLowerCase()}:`, errorMessage)
       setError(errorMessage)
     } finally {
       setLoading(false)
+      console.log('fetchData completed')
     }
   }
 
@@ -286,7 +290,7 @@ const EntityScreen: React.FC = () => {
   }
 
   if (loading) {
-    return <Loader />; 
+    return <Loader />
   }
 
   return (

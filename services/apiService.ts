@@ -1,7 +1,8 @@
 import axios from 'axios'
+import { BASE_URL } from '@env';
 
 const api = axios.create({
-  baseURL: 'https://3.106.249.164.nip.io/:3000', // to change
+  baseURL: BASE_URL, // to change
 })
 
 // Request interceptor

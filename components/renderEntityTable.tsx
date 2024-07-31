@@ -1,4 +1,5 @@
 import { StyleSheet, View, Text } from 'react-native'
+import React from 'react';
 
 // renders different cell titles and sizes based on fields
 export const renderEntityItem = (entityType: string, item: any) => {

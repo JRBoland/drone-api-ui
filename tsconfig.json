@@ -3,6 +3,20 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "jsx": "react-native",
-    "strict": true
-  }
+    "strict": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "paths": {
+      "@env": ["./env.d.ts"]
+    }
+  },
+  "include": [
+    "components",
+    "config",
+    "interfaces",
+    "screens",
+    "services",
+    "env.d.ts"
+  ]
 }
