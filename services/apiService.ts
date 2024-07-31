@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://ec2-3-106-249-164.ap-southeast-2.compute.amazonaws.com:3000', // to change
+  baseURL: 'https://3.106.249.164.nip.io/:3000', // to change
 })
 
 // Request interceptor
