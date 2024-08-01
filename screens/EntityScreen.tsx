@@ -28,6 +28,7 @@ import { errorStatusMessage } from '../utils/errorUtils'
 import Header from '../components/Header'
 import EntityCard from '../components/EntityCard'
 import Loader from '../components/Loader'
+import { ScrollView } from 'react-native'
 
 const MemoizedEntityCard = memo(EntityCard)
 
@@ -334,10 +335,11 @@ const EntityScreen: React.FC = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
-    >
+    //<KeyboardAvoidingView
+    //  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    //  style={{ flex: 1 }}
+    //>
+    //<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <SafeAreaView style={styles.container}>
         {error && <Text style={styles.errorText}>{error}</Text>}
         <Header
@@ -404,6 +406,7 @@ const EntityScreen: React.FC = () => {
         <FlatList
           contentContainerStyle={styles.flatListContent}
           data={filteredEntities}
+          scrollEnabled={true}
           ListEmptyComponent={
             <Text
               style={styles.text}
@@ -423,13 +426,13 @@ const EntityScreen: React.FC = () => {
           ListFooterComponent={isLoadingMore ? <ActivityIndicator /> : null}
         />
       </SafeAreaView>
-    </KeyboardAvoidingView>
+    //</ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    //flex: 1,
+    flex: 1,
     //padding: 16,
     backgroundColor: '#F5F5F5',
   },

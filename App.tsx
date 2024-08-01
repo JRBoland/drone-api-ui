@@ -16,6 +16,8 @@ import { AuthProvider, useAuth } from './utils/authContext'
 import EntityScreen from './screens/EntityScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import AuthButton from './components/AuthButton'
+import { View } from 'react-native-web'
+import { globalStyles } from './global'
 
 const Stack = createStackNavigator()
 
@@ -129,7 +131,9 @@ export default function App() {
 
   return (
     <AuthProvider>
+      <View style={globalStyles.container}>
       <AppNavigator />
+      </View>
     </AuthProvider>
   )
 }
