@@ -23,14 +23,22 @@ const EntityCard = ({
   formData,
   setIsEditing,
   setFormData,
+  entityType,
+  config,
 }: any) => {
+
+  if (!entityType) {
+    console.log('!entityType')
+    return null
+  }
+
   if (isEditing[item.id]) {
     return (
       <View style={styles.editCard}>
         <Text style={styles.cardTitle}>
-          Edit {item.entityType.slice(0, -1)} (ID: {item.id})
+          Edit {entityType.slice(0, -1)} (ID: {item.id})
         </Text>
-        {item.config.fields.map((field: any) => {
+        {config.fields.map((field: any) => {
           if (field.name === 'footage_recorded' && isFlight(item)) {
             return (
               <View key={field.name} style={styles.switchContainer}>
