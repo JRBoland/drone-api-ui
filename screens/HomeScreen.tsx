@@ -15,33 +15,37 @@ const HomeScreen = ({ navigation }: any) => {
   const [username, setUsername] = useState('Guest')
   const { isAuthenticated, logout } = useAuth()
 
-  // grabs username to display. todo: check token is still valid at this point?
+
   useEffect(() => {
     const getUsername = async () => {
+      if (isAuthenticated) {
       const storedUsername = await AsyncStorage.getItem('username')
       if (storedUsername) {
         setUsername(storedUsername)
       }
-    }
-
-    getUsername()
-  }, [])
-
-  const handleAuthAction = async () => {
-    if (isAuthenticated) {
-      await AsyncStorage.removeItem('userToken')
-      await AsyncStorage.removeItem('username')
-      if (Platform.OS === 'web') {
-        window.alert('You have logged out')
-      } else {
-        Alert.alert('You have logged out')
-      }
-      logout()
-      navigation.navigate('Login')
     } else {
-      navigation.navigate('Login')
+      setUsername('Guest');
     }
   }
+
+    getUsername()
+  }, [isAuthenticated])
+
+  //const handleAuthAction = async () => {
+  //  if (isAuthenticated) {
+  //    await AsyncStorage.removeItem('userToken')
+  //    await AsyncStorage.removeItem('username')
+  //    if (Platform.OS === 'web') {
+  //      window.alert('You have logged out')
+  //    } else {
+  //      Alert.alert('You have logged out')
+  //    }
+  //    logout()
+  //    navigation.navigate('Login')
+  //  } else {
+  //    navigation.navigate('Login')
+  //  }
+  //}
 
   const handleNavigatetoEntity = (entityType: string) => {
     navigation.navigate('Entity', { entityType })
