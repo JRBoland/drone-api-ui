@@ -295,98 +295,93 @@ const EntityScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {error && <Text style={styles.errorText}>{error}</Text>}
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        <Header
-          entityType={entityType}
-          isSearchActive={isSearchActive}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          clearSearch={clearSearch}
-          startSearch={startSearch}
-          startAdding={startAdding}
-          isAuthenticated={isAuthenticated}
-        />
-        {isAdding && (
-          <View style={styles.editCard}>
-            <Text style={styles.cardTitle}>Add {entityType.slice(0, -1)}</Text>
-            {config.fields.map((field) => {
-              if (
-                field.name === 'footage_recorded' &&
-                entityType === 'Flights'
-              ) {
-                return (
-                  <View key={field.name} style={styles.switchContainer}>
-                    <Text style={styles.fieldTitle}>
-                      {field.placeholder} {field.required && '*'}
-                    </Text>
-                    <Switch
-                      value={!!formData[field.name]}
-                      onValueChange={(value) =>
-                        handleInputChange(field.name, value)
-                      }
-                    />
-                  </View>
-                )
-              }
+      {error && <Text style={styles.errorText}>{error}</Text>}
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      <Header
+        entityType={entityType}
+        isSearchActive={isSearchActive}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        clearSearch={clearSearch}
+        startSearch={startSearch}
+        startAdding={startAdding}
+        isAuthenticated={isAuthenticated}
+      />
+      {isAdding && (
+        <View style={styles.editCard}>
+          <Text style={styles.cardTitle}>Add {entityType.slice(0, -1)}</Text>
+          {config.fields.map((field) => {
+            if (field.name === 'footage_recorded' && entityType === 'Flights') {
               return (
-                <View key={field.name} style={styles.fieldContainer}>
-                  <Text style={styles.fieldTitle}>{field.placeholder}</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder={`${field.placeholder}${
-                      field.required ? ' *' : ''
-                    }`}
-                    value={formData[field.name]?.toString() || ''}
-                    onChangeText={(text) =>
-                      setFormData({ ...formData, [field.name]: text })
+                <View key={field.name} style={styles.switchContainer}>
+                  <Text style={styles.fieldTitle}>
+                    {field.placeholder} {field.required && '*'}
+                  </Text>
+                  <Switch
+                    value={!!formData[field.name]}
+                    onValueChange={(value) =>
+                      handleInputChange(field.name, value)
                     }
                   />
                 </View>
               )
-            })}
-            <View style={styles.cardButtonsRow}>
-              <Pressable onPress={handleAddEntity} style={styles.button}>
-                <Text style={styles.buttonText}>Save</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => setIsAdding(false)}
-                style={styles.button}
-              >
-                <Text style={styles.buttonText}>Cancel</Text>
-              </Pressable>
-            </View>
+            }
+            return (
+              <View key={field.name} style={styles.fieldContainer}>
+                <Text style={styles.fieldTitle}>{field.placeholder}</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder={`${field.placeholder}${
+                    field.required ? ' *' : ''
+                  }`}
+                  value={formData[field.name]?.toString() || ''}
+                  onChangeText={(text) =>
+                    setFormData({ ...formData, [field.name]: text })
+                  }
+                />
+              </View>
+            )
+          })}
+          <View style={styles.cardButtonsRow}>
+            <Pressable onPress={handleAddEntity} style={styles.button}>
+              <Text style={styles.buttonText}>Save</Text>
+            </Pressable>
+            <Pressable onPress={() => setIsAdding(false)} style={styles.button}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </Pressable>
           </View>
+        </View>
+      )}
+      <FlatList
+        data={filteredEntities}
+        ListEmptyComponent={
+          <Text
+            style={styles.text}
+          >{`No ${entityType.toLowerCase()} found.`}</Text>
+        }
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <EntityCard
+            item={item}
+            isEditing={isEditing}
+            startEditing={startEditing}
+            handleDeleteEntity={handleDeleteEntity}
+            pilots={pilots}
+            drones={drones}
+            isAuthenticated={isAuthenticated}
+            handleInputChange={handleInputChange}
+            handleEditEntity={handleEditEntity}
+            formData={formData}
+            setIsEditing={setIsEditing}
+            setFormData={setFormData}
+            entityType={entityType}
+            config={config}
+          />
         )}
-        <FlatList
-          data={filteredEntities}
-          ListEmptyComponent={
-            <Text
-              style={styles.text}
-            >{`No ${entityType.toLowerCase()} found.`}</Text>
-          }
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <EntityCard
-              item={item}
-              isEditing={isEditing}
-              startEditing={startEditing}
-              handleDeleteEntity={handleDeleteEntity}
-              pilots={pilots}
-              drones={drones}
-              isAuthenticated={isAuthenticated}
-              handleInputChange={handleInputChange}
-              handleEditEntity={handleEditEntity}
-              formData={formData}
-              setIsEditing={setIsEditing}
-              setFormData={setFormData}
-              entityType={entityType}
-              config={config}
-            />
-          )}
-        />
-      </ScrollView>
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      />
     </SafeAreaView>
   )
 }
