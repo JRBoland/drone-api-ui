@@ -1,11 +1,92 @@
-import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import { Entity, isDrone, isPilot, isFlight } from '../interfaces/entity';
+import React from 'react'
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  Switch,
+} from 'react-native'
+import { FontAwesome } from '@expo/vector-icons'
+import { Entity, isDrone, isPilot, isFlight } from '../interfaces/entity'
 
-const EntityCard = ({ item, isEditing, startEditing, handleDeleteEntity, pilots, drones, isAuthenticated }: any) => {
+const EntityCard = ({
+  item,
+  isEditing,
+  startEditing,
+  handleDeleteEntity,
+  pilots,
+  drones,
+  isAuthenticated,
+  handleInputChange,
+  handleEditEntity,
+  formData,
+  setIsEditing,
+  setFormData,
+}: any) => {
   if (isEditing[item.id]) {
-    // Render editing card (similarly refactor the editing card code into its own component if necessary)
+    return (
+      <View style={styles.editCard}>
+        <Text style={styles.cardTitle}>
+          Edit {item.entityType.slice(0, -1)} (ID: {item.id})
+        </Text>
+        {item.config.fields.map((field: any) => {
+          if (field.name === 'footage_recorded' && isFlight(item)) {
+            return (
+              <View key={field.name} style={styles.switchContainer}>
+                <Text style={styles.fieldTitle}>
+                  {field.placeholder} {field.required && '*'}
+                </Text>
+                <Switch
+                  value={
+                    formData[field.name] !== undefined
+                      ? !!formData[field.name]
+                      : !!(item as any)[field.name]
+                  }
+                  onValueChange={(value) =>
+                    handleInputChange(field.name, value)
+                  }
+                />
+              </View>
+            )
+          }
+          return (
+            <View key={field.name} style={styles.fieldContainer}>
+              <Text style={styles.fieldTitle}>{field.placeholder}</Text>
+              <TextInput
+                style={styles.input}
+                placeholder={`${field.placeholder}${
+                  field.required ? ' *' : ''
+                }`}
+                value={
+                  formData[field.name] !== undefined
+                    ? formData[field.name].toString()
+                    : (item as any)[field.name]?.toString() ?? ''
+                }
+                onChangeText={(text) => handleInputChange(field.name, text)}
+              />
+            </View>
+          )
+        })}
+        <View style={styles.cardButtonsRow}>
+          <Pressable
+            onPress={() => handleEditEntity(item.id)}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Save</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              setIsEditing({})
+              setFormData({ footage_recorded: false }) // Clear form data when cancelling edit
+            }}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Cancel</Text>
+          </Pressable>
+        </View>
+      </View>
+    )
   }
 
   return (
@@ -58,7 +139,7 @@ const EntityCard = ({ item, isEditing, startEditing, handleDeleteEntity, pilots,
       {isAuthenticated && (
         <View style={styles.iconButtons}>
           <Pressable
-            onPress={() => startEditing(item.id)}
+            onPress={() => startEditing(item)}
             style={styles.iconButton}
           >
             <FontAwesome name="pencil" size={24} color="black" />
@@ -72,8 +153,8 @@ const EntityCard = ({ item, isEditing, startEditing, handleDeleteEntity, pilots,
         </View>
       )}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   card: {
@@ -121,6 +202,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
   },
-});
+  editCard: {
+    backgroundColor: '#FFF',
+    padding: 10,
+    marginVertical: 6,
+    borderRadius: 8,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    flexDirection: 'column',
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  fieldContainer: {
+    marginBottom: 10,
+  },
+  fieldTitle: {
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 5,
+    fontFamily: 'SpaceGrotesk_400Regular',
+  },
+  input: {
+    width: '100%',
+    marginVertical: 10,
+    borderWidth: 1,
+    borderRadius: 6,
+    borderColor: '#ccc',
+    backgroundColor: '#FFF',
+    padding: 10,
+    fontFamily: 'SpaceGrotesk_400Regular',
+  },
+  cardButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  button: {
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 10,
+    backgroundColor: '#ddd',
+    minWidth: 140,
+  },
+  buttonText: {
+    color: '#333',
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+    fontFamily: 'SpaceGrotesk_400Regular',
+  },
+})
 
-export default EntityCard;
+export default EntityCard

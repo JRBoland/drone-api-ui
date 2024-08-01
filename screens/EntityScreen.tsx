@@ -75,7 +75,7 @@ const EntityScreen: React.FC = () => {
   }, [searchQuery, entities])
 
   const fetchData = async () => {
-    setLoading(true) // Show loader
+    setLoading(true)
     console.log('Starting fetchData for entityType:', entityType)
     try {
       const response = await fetchEntityData<Entity>(entityType, false)
@@ -277,7 +277,7 @@ const EntityScreen: React.FC = () => {
   const startAdding = () => {
     setIsAdding(true)
     setIsEditing({})
-    setFormData({ footage_recorded: false }) 
+    setFormData({ footage_recorded: false })
   }
 
   const startSearch = () => {
@@ -376,6 +376,13 @@ const EntityScreen: React.FC = () => {
               pilots={pilots}
               drones={drones}
               isAuthenticated={isAuthenticated}
+              handleInputChange={handleInputChange}
+              handleEditEntity={handleEditEntity}
+              formData={formData}
+              setIsEditing={setIsEditing}
+              setFormData={setFormData}
+              entityType={entityType}
+              config={config}
             />
           )}
         />
