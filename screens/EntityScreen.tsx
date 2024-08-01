@@ -296,7 +296,6 @@ const EntityScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       {error && <Text style={styles.errorText}>{error}</Text>}
-      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       <Header
         entityType={entityType}
         isSearchActive={isSearchActive}
