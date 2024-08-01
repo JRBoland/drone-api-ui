@@ -277,7 +277,7 @@ const EntityScreen: React.FC = () => {
   const startAdding = () => {
     setIsAdding(true)
     setIsEditing({})
-    setFormData({ footage_recorded: false }) // Reset form data to initial values
+    setFormData({ footage_recorded: false }) 
   }
 
   const startSearch = () => {

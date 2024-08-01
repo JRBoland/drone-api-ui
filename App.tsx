@@ -86,7 +86,6 @@ function AuthStack() {
       <Stack.Screen
         name="Home"
         component={HomeScreen}
-        options={{ headerShown: false }}
       />
       <Stack.Screen name="Entity" component={EntityScreen} />
       <Stack.Screen name="Manage" component={ManageEntityScreen} />

@@ -58,7 +58,7 @@ const EntityCard = ({ item, isEditing, startEditing, handleDeleteEntity, pilots,
       {isAuthenticated && (
         <View style={styles.iconButtons}>
           <Pressable
-            onPress={() => startEditing(item)}
+            onPress={() => startEditing(item.id)}
             style={styles.iconButton}
           >
             <FontAwesome name="pencil" size={24} color="black" />
