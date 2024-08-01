@@ -6,6 +6,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import HomeScreen from './screens/HomeScreen'
 import LoginScreen from './screens/LoginScreen'
 import ManageEntityScreen from './screens/ManageEntityScreen'
+import TestScreen from './screens/TestScreen'
 import {
   useFonts,
   SpaceGrotesk_300Light,
@@ -16,6 +17,8 @@ import { AuthProvider, useAuth } from './utils/authContext'
 import EntityScreen from './screens/EntityScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import AuthButton from './components/AuthButton'
+import { View } from 'react-native'
+import './globalStyles.css';
 
 const Stack = createStackNavigator()
 
@@ -30,6 +33,7 @@ const headerTitleStyle = {
 }
 
 const headerTintColor = '#fffefc'
+
 
 // Unauthenticated stack
 function MainStack() {
@@ -126,7 +130,7 @@ export default function App() {
 
   return (
     <AuthProvider>
-        <AppNavigator />
+      <AppNavigator />
     </AuthProvider>
   )
 }
