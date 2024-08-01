@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, memo } from 'react'
 import {
   View,
   Text,
@@ -7,7 +7,9 @@ import {
   Pressable,
   RefreshControl,
   TextInput,
-  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
 } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { useAuth } from '../utils/authContext'
@@ -21,13 +23,13 @@ import { Entity, isDrone, isPilot, isFlight } from '../interfaces/entity'
 import { useFocusEffect } from '@react-navigation/native'
 import { entityConfigurations } from '../config/entityConfigurations'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { FontAwesome } from '@expo/vector-icons'
 import { Switch } from 'react-native'
-import { AxiosError } from 'axios'
 import { errorStatusMessage } from '../utils/errorUtils'
 import Header from '../components/Header'
 import EntityCard from '../components/EntityCard'
 import Loader from '../components/Loader'
+
+const MemoizedEntityCard = memo(EntityCard)
 
 const EntityScreen: React.FC = () => {
   const route = useRoute()
@@ -51,6 +53,8 @@ const EntityScreen: React.FC = () => {
   const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
+  const [page, setPage] = useState(1)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
@@ -289,99 +293,131 @@ const EntityScreen: React.FC = () => {
     setIsSearchActive(false)
   }
 
+  const loadMoreItems = useCallback(() => {
+    if (!isLoadingMore) {
+      setIsLoadingMore(true)
+      // Fetch more items here
+      setPage((prevPage) => prevPage + 1)
+      setIsLoadingMore(false)
+    }
+  }, [isLoadingMore])
+
+  const renderItem = useCallback(
+    ({ item }: { item: Entity }) => (
+      <MemoizedEntityCard
+        item={item}
+        isEditing={isEditing}
+        startEditing={startEditing}
+        handleDeleteEntity={handleDeleteEntity}
+        pilots={pilots}
+        drones={drones}
+        isAuthenticated={isAuthenticated}
+        handleInputChange={handleInputChange}
+        handleEditEntity={handleEditEntity}
+        formData={formData}
+        setIsEditing={setIsEditing}
+        setFormData={setFormData}
+        entityType={entityType}
+        config={config}
+      />
+    ),
+    [isEditing, pilots, drones, isAuthenticated, formData, entityType, config]
+  )
+
   if (loading) {
     return <Loader />
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {error && <Text style={styles.errorText}>{error}</Text>}
-      <Header
-        entityType={entityType}
-        isSearchActive={isSearchActive}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        clearSearch={clearSearch}
-        startSearch={startSearch}
-        startAdding={startAdding}
-        isAuthenticated={isAuthenticated}
-      />
-      {isAdding && (
-        <View style={styles.editCard}>
-          <Text style={styles.cardTitle}>Add {entityType.slice(0, -1)}</Text>
-          {config.fields.map((field) => {
-            if (field.name === 'footage_recorded' && entityType === 'Flights') {
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+    >
+      <SafeAreaView style={styles.container}>
+        {error && <Text style={styles.errorText}>{error}</Text>}
+        <Header
+          entityType={entityType}
+          isSearchActive={isSearchActive}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          clearSearch={clearSearch}
+          startSearch={startSearch}
+          startAdding={startAdding}
+          isAuthenticated={isAuthenticated}
+        />
+        {isAdding && (
+          <View style={styles.editCard}>
+            <Text style={styles.cardTitle}>Add {entityType.slice(0, -1)}</Text>
+            {config.fields.map((field) => {
+              if (
+                field.name === 'footage_recorded' &&
+                entityType === 'Flights'
+              ) {
+                return (
+                  <View key={field.name} style={styles.switchContainer}>
+                    <Text style={styles.fieldTitle}>
+                      {field.placeholder} {field.required && '*'}
+                    </Text>
+                    <Switch
+                      value={!!formData[field.name]}
+                      onValueChange={(value) =>
+                        handleInputChange(field.name, value)
+                      }
+                    />
+                  </View>
+                )
+              }
               return (
-                <View key={field.name} style={styles.switchContainer}>
-                  <Text style={styles.fieldTitle}>
-                    {field.placeholder} {field.required && '*'}
-                  </Text>
-                  <Switch
-                    value={!!formData[field.name]}
-                    onValueChange={(value) =>
-                      handleInputChange(field.name, value)
+                <View key={field.name} style={styles.fieldContainer}>
+                  <Text style={styles.fieldTitle}>{field.placeholder}</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder={`${field.placeholder}${
+                      field.required ? ' *' : ''
+                    }`}
+                    value={formData[field.name]?.toString() || ''}
+                    onChangeText={(text) =>
+                      setFormData({ ...formData, [field.name]: text })
                     }
                   />
                 </View>
               )
-            }
-            return (
-              <View key={field.name} style={styles.fieldContainer}>
-                <Text style={styles.fieldTitle}>{field.placeholder}</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder={`${field.placeholder}${
-                    field.required ? ' *' : ''
-                  }`}
-                  value={formData[field.name]?.toString() || ''}
-                  onChangeText={(text) =>
-                    setFormData({ ...formData, [field.name]: text })
-                  }
-                />
-              </View>
-            )
-          })}
-          <View style={styles.cardButtonsRow}>
-            <Pressable onPress={handleAddEntity} style={styles.button}>
-              <Text style={styles.buttonText}>Save</Text>
-            </Pressable>
-            <Pressable onPress={() => setIsAdding(false)} style={styles.button}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </Pressable>
+            })}
+            <View style={styles.cardButtonsRow}>
+              <Pressable onPress={handleAddEntity} style={styles.button}>
+                <Text style={styles.buttonText}>Save</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => setIsAdding(false)}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </Pressable>
+            </View>
           </View>
-        </View>
-      )}
-      <FlatList
-        data={filteredEntities}
-        ListEmptyComponent={
-          <Text
-            style={styles.text}
-          >{`No ${entityType.toLowerCase()} found.`}</Text>
-        }
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <EntityCard
-            item={item}
-            isEditing={isEditing}
-            startEditing={startEditing}
-            handleDeleteEntity={handleDeleteEntity}
-            pilots={pilots}
-            drones={drones}
-            isAuthenticated={isAuthenticated}
-            handleInputChange={handleInputChange}
-            handleEditEntity={handleEditEntity}
-            formData={formData}
-            setIsEditing={setIsEditing}
-            setFormData={setFormData}
-            entityType={entityType}
-            config={config}
-          />
         )}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      />
-    </SafeAreaView>
+        <FlatList
+          data={filteredEntities}
+          ListEmptyComponent={
+            <Text
+              style={styles.text}
+            >{`No ${entityType.toLowerCase()} found.`}</Text>
+          }
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={21}
+          removeClippedSubviews={true}
+          onEndReached={loadMoreItems}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={isLoadingMore ? <ActivityIndicator /> : null}
+        />
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   )
 }
 
