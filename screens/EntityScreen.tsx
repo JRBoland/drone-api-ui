@@ -325,6 +325,7 @@ const EntityScreen: React.FC = () => {
         setFormData={setFormData}
         entityType={entityType}
         config={config}
+        style={{ flex: 1 }}
       />
     ),
     [isEditing, pilots, drones, isAuthenticated, formData, entityType, config]
@@ -340,112 +341,97 @@ const EntityScreen: React.FC = () => {
     //  style={{ flex: 1 }}
     //>
     //<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <SafeAreaView style={styles.container}>
-        {error && <Text style={styles.errorText}>{error}</Text>}
-        <Header
-          entityType={entityType}
-          isSearchActive={isSearchActive}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          clearSearch={clearSearch}
-          startSearch={startSearch}
-          startAdding={startAdding}
-          isAuthenticated={isAuthenticated}
-        />
-        {isAdding && (
-          <View style={styles.editCard}>
-            <Text style={styles.cardTitle}>Add {entityType.slice(0, -1)}</Text>
-            {config.fields.map((field) => {
-              if (
-                field.name === 'footage_recorded' &&
-                entityType === 'Flights'
-              ) {
-                return (
-                  <View key={field.name} style={styles.switchContainer}>
-                    <Text style={styles.fieldTitle}>
-                      {field.placeholder} {field.required && '*'}
-                    </Text>
-                    <Switch
-                      value={!!formData[field.name]}
-                      onValueChange={(value) =>
-                        handleInputChange(field.name, value)
-                      }
-                    />
-                  </View>
-                )
-              }
+    <SafeAreaView style={styles.container}>
+      {error && <Text style={styles.errorText}>{error}</Text>}
+      <Header
+        entityType={entityType}
+        isSearchActive={isSearchActive}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        clearSearch={clearSearch}
+        startSearch={startSearch}
+        startAdding={startAdding}
+        isAuthenticated={isAuthenticated}
+      />
+      {isAdding && (
+        <View style={styles.editCard}>
+          <Text style={styles.cardTitle}>Add {entityType.slice(0, -1)}</Text>
+          {config.fields.map((field) => {
+            if (field.name === 'footage_recorded' && entityType === 'Flights') {
               return (
-                <View key={field.name} style={styles.fieldContainer}>
-                  <Text style={styles.fieldTitle}>{field.placeholder}</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder={`${field.placeholder}${
-                      field.required ? ' *' : ''
-                    }`}
-                    value={formData[field.name]?.toString() || ''}
-                    onChangeText={(text) =>
-                      setFormData({ ...formData, [field.name]: text })
+                <View key={field.name} style={styles.switchContainer}>
+                  <Text style={styles.fieldTitle}>
+                    {field.placeholder} {field.required && '*'}
+                  </Text>
+                  <Switch
+                    value={!!formData[field.name]}
+                    onValueChange={(value) =>
+                      handleInputChange(field.name, value)
                     }
                   />
                 </View>
               )
-            })}
-            <View style={styles.cardButtonsRow}>
-              <Pressable onPress={handleAddEntity} style={styles.button}>
-                <Text style={styles.buttonText}>Save</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => setIsAdding(false)}
-                style={styles.button}
-              >
-                <Text style={styles.buttonText}>Cancel</Text>
-              </Pressable>
-            </View>
+            }
+            return (
+              <View key={field.name} style={styles.fieldContainer}>
+                <Text style={styles.fieldTitle}>{field.placeholder}</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder={`${field.placeholder}${
+                    field.required ? ' *' : ''
+                  }`}
+                  value={formData[field.name]?.toString() || ''}
+                  onChangeText={(text) =>
+                    setFormData({ ...formData, [field.name]: text })
+                  }
+                />
+              </View>
+            )
+          })}
+          <View style={styles.cardButtonsRow}>
+            <Pressable onPress={handleAddEntity} style={styles.button}>
+              <Text style={styles.buttonText}>Save</Text>
+            </Pressable>
+            <Pressable onPress={() => setIsAdding(false)} style={styles.button}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </Pressable>
           </View>
-        )}
-        <FlatList
-          contentContainerStyle={styles.flatListContent}
-          data={filteredEntities}
-          scrollEnabled={true}
-          ListEmptyComponent={
-            <Text
-              style={styles.text}
-            >{`No ${entityType.toLowerCase()} found.`}</Text>
-          }
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          initialNumToRender={10}
-          maxToRenderPerBatch={10}
-          windowSize={21}
-          removeClippedSubviews={true}
-          onEndReached={loadMoreItems}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={isLoadingMore ? <ActivityIndicator /> : null}
-        />
-      </SafeAreaView>
-    //</ScrollView>
+        </View>
+      )}
+      <FlatList
+        contentContainerStyle={styles.flatListContent}
+        data={filteredEntities}
+        ListEmptyComponent={
+          <Text
+            style={styles.text}
+          >{`No ${entityType.toLowerCase()} found.`}</Text>
+        }
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={21}
+        removeClippedSubviews={true}
+        onEndReached={loadMoreItems}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={isLoadingMore ? <ActivityIndicator /> : null}
+      />
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //padding: 16,
+    padding: 16,
     backgroundColor: '#F5F5F5',
   },
   flatListContent: {
-    padding: 16,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-    color: '#181818',
-    fontFamily: 'SpaceGrotesk_700Bold',
+    //padding: 16,
+    marginBottom: 20,
   },
   searchInput: {
     flex: 1,

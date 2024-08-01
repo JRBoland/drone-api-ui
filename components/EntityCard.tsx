@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flex: 1,
   },
   cardContent: {
     flex: 1,
