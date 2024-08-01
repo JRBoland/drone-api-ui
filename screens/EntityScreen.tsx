@@ -55,6 +55,7 @@ const EntityScreen: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [page, setPage] = useState(1)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [lastFetchTime, setLastFetchTime] = useState<number>(0)
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
@@ -66,8 +67,12 @@ const EntityScreen: React.FC = () => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchData()
-    }, [entityType])
+      const now = Date.now()
+      if (now - lastFetchTime > 60000) {
+        fetchData()
+        setLastFetchTime(now)
+      }
+    }, [entityType, lastFetchTime])
   )
 
   useEffect(() => {
@@ -397,6 +402,7 @@ const EntityScreen: React.FC = () => {
           </View>
         )}
         <FlatList
+          contentContainerStyle={styles.flatListContent}
           data={filteredEntities}
           ListEmptyComponent={
             <Text
@@ -423,9 +429,12 @@ const EntityScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 16,
+    //flex: 1,
+    //padding: 16,
     backgroundColor: '#F5F5F5',
+  },
+  flatListContent: {
+    padding: 16,
   },
   headerTitle: {
     fontSize: 20,
@@ -507,8 +516,10 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
-    marginBottom: 10,
+    //marginBottom: 10,
     fontFamily: 'SpaceGrotesk_400Regular',
+    paddingHorizontal: 24,
+    paddingVertical: 10,
   },
   text: {
     marginTop: 4,

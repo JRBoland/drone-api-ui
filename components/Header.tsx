@@ -1,8 +1,17 @@
-import React from 'react';
-import { View, Text, Pressable, TextInput, StyleSheet } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import React from 'react'
+import { View, Text, Pressable, TextInput, StyleSheet } from 'react-native'
+import { FontAwesome } from '@expo/vector-icons'
 
-const Header = ({ entityType, isSearchActive, searchQuery, setSearchQuery, clearSearch, startSearch, startAdding, isAuthenticated }: any) => {
+const Header = ({
+  entityType,
+  isSearchActive,
+  searchQuery,
+  setSearchQuery,
+  clearSearch,
+  startSearch,
+  startAdding,
+  isAuthenticated,
+}: any) => {
   return (
     <View style={styles.header}>
       <Text style={styles.headerTitle}>{`${entityType} List`}</Text>
@@ -35,14 +44,15 @@ const Header = ({ entityType, isSearchActive, searchQuery, setSearchQuery, clear
         )}
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 16,
   },
   headerTitle: {
     fontSize: 20,
@@ -75,6 +85,6 @@ const styles = StyleSheet.create({
     padding: 10,
     fontFamily: 'SpaceGrotesk_400Regular',
   },
-});
+})
 
-export default Header;
+export default Header
