@@ -5,8 +5,6 @@ import { createStackNavigator } from '@react-navigation/stack'
 import * as SplashScreen from 'expo-splash-screen'
 import HomeScreen from './screens/HomeScreen'
 import LoginScreen from './screens/LoginScreen'
-import ManageEntityScreen from './screens/ManageEntityScreen'
-import TestScreen from './screens/TestScreen'
 import {
   useFonts,
   SpaceGrotesk_300Light,
@@ -17,7 +15,6 @@ import { AuthProvider, useAuth } from './utils/authContext'
 import EntityScreen from './screens/EntityScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import AuthButton from './components/AuthButton'
-import { View } from 'react-native'
 import './globalStyles.css';
 
 const Stack = createStackNavigator()
@@ -89,7 +86,6 @@ function AuthStack() {
       />
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Entity" component={EntityScreen} />
-      <Stack.Screen name="Manage" component={ManageEntityScreen} />
     </Stack.Navigator>
   )
 }
@@ -125,7 +121,7 @@ export default function App() {
   }, [fontsLoaded])
 
   if (!fontsLoaded) {
-    return null // or a loading spinner
+    return null 
   }
 
   return (

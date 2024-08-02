@@ -7,8 +7,6 @@ import {
   Pressable,
   RefreshControl,
   TextInput,
-  KeyboardAvoidingView,
-  Platform,
   ActivityIndicator,
 } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -28,7 +26,6 @@ import { errorStatusMessage } from '../utils/errorUtils'
 import Header from '../components/Header'
 import EntityCard from '../components/EntityCard'
 import Loader from '../components/Loader'
-import { ScrollView } from 'react-native'
 
 const MemoizedEntityCard = memo(EntityCard)
 
@@ -336,11 +333,6 @@ const EntityScreen: React.FC = () => {
   }
 
   return (
-    //<KeyboardAvoidingView
-    //  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    //  style={{ flex: 1 }}
-    //>
-    //<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
     <SafeAreaView style={styles.container}>
       {error && <Text style={styles.errorText}>{error}</Text>}
       <Header
@@ -430,7 +422,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   flatListContent: {
-    //padding: 16,
     marginBottom: 20,
   },
   searchInput: {
